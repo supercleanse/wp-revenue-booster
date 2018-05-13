@@ -50,7 +50,6 @@ jQuery(document).ready(function ($) {
   };
 
   var wprb_click_text = function(target) {
-    var page = location.href.replace(/\?.*/,'');
     var selector = wprb_get_selector(target);
 
     if($.inArray(selector, WPRB.selections) !== -1) {
@@ -62,7 +61,8 @@ jQuery(document).ready(function ($) {
       var selection_index = WPRB.selections.indexOf(selector);
       WPRB.selections.splice(selection_index, 1);
 
-      // AJAX Call to add selection
+      // TODO: AJAX Call to remove selection
+
       $(target).addClass('wprb-add-selection');
     }
     else {
@@ -72,7 +72,8 @@ jQuery(document).ready(function ($) {
 
       WPRB.selections.push(selector);
 
-      // AJAX Call to add selection
+      // TODO: AJAX Call to add selection
+
       $(target).addClass('wprb-selection-added');
       $(target).attr('title', WPRB.strings['remove_selection']);
     }

@@ -9,15 +9,26 @@ Author URI: https://chrislema.com/
 Text Domain: wp-revenue-booster
 */
 
+namespace wp_revenue_booster;
+
 if(!defined('ABSPATH')) {die('You are not allowed to call this page directly.');}
 
-define('WPRB_PLUGIN_ID', 'wp-revenue-booster/main.php');
-define('WPRB_PLUGIN_SLUG', 'wp-revenue-booster');
-define('WPRB_PATH', WP_PLUGIN_DIR . '/' . WPRB_PLUGIN_SLUG);
+use \wp_revenue_booster\lib as lib;
+use \wp_revenue_booster\controllers as ctrl;
+
+define(__NAMESPACE__ . '\ROOT_NAMESPACE', __NAMESPACE__);
+define(ROOT_NAMESPACE . '\CTRLS_NAMESPACE', ROOT_NAMESPACE . '\controllers');
+define(ROOT_NAMESPACE . '\HELPERS_NAMESPACE', ROOT_NAMESPACE . '\helpers');
+define(ROOT_NAMESPACE . '\MODELS_NAMESPACE', ROOT_NAMESPACE . '\models');
+define(ROOT_NAMESPACE . '\LIB_NAMESPACE', ROOT_NAMESPACE . '\lib');
+
+define(ROOT_NAMESPACE . '\ID', 'wp-revenue-booster/main.php');
+define(ROOT_NAMESPACE . '\SLUG', 'wp-revenue-booster');
+define(ROOT_NAMESPACE . '\PATH', WP_PLUGIN_DIR . '/' . SLUG);
 
 // Make all of our URLS protocol agnostic
-$wprb_url_protocol = (is_ssl())?'https':'http';
-define('WPRB_URL',preg_replace('/^https?:/', "{$wprb_url_protocol}:", plugins_url('/'.WPRB_PLUGIN_SLUG)));
+$wprb_url_protocol = (is_ssl())?'https':'http'; // Make all of our URLS protocol agnostic
+define(ROOT_NAMESPACE . '\URL', preg_replace('/^https?:/', "{$wprb_url_protocol}:", plugins_url('/'.SLUG)));
 
 // Cookie the user immediately if they aren't already cookied
 // V2 Modify the cookie based on customer usage
@@ -33,9 +44,6 @@ define('WPRB_URL',preg_replace('/^https?:/', "{$wprb_url_protocol}:", plugins_ur
 // - on click, popup interface
 // - :
 //
-// HOW WILL WE SAVE THE ELEMENT? Do we base it on the element or on the text?
-//
-// OR Should we implement it as a shortcode? This would have several advantages for our initial implementation.
 
 // WPRB Selection Stuff
 class WP_Revenue_Booster {
@@ -83,14 +91,19 @@ class WP_Revenue_Booster {
       'selection_removed' => __('Customization Removed')
     ];
 
+    // Get a clean page url with appropriate query string
+    $home = preg_replace('/^https?:/', 'https?:', home_url());
+    $page = preg_replace('!' . preg_quote($home,'!') . '!', '', $_SERVER['REQUEST_URI']); // Remove full home path from page
+    $page = preg_replace('/[\?&]wprb-selection/', '', $page); // Remove wprb-selection param
+
     $selections = array_keys($customizations);
 
-    wp_enqueue_style('wprb-selection', WPRB_URL . '/wprb-selection.css');
+    wp_enqueue_style('wprb-selection', URL . '/wprb-selection.css');
 
     wp_register_script('wprb-tippy', 'https://unpkg.com/tippy.js@2.5.2/dist/tippy.all.min.js');
-    wp_register_script('wprb-css-selector-generator', WPRB_URL . '/lib/css-selector-generator.min.js');
-    wp_enqueue_script('wprb-selection', WPRB_URL . '/wprb-selection.js', ['jquery','wprb-tippy','wprb-css-selector-generator']);
-    wp_localize_script('wprb-selection', 'WPRB', compact('segments', 'selections', 'customizations', 'strings'));
+    wp_register_script('wprb-css-selector-generator', URL . '/lib/css-selector-generator.min.js');
+    wp_enqueue_script('wprb-selection', URL . '/wprb-selection.js', ['jquery','wprb-tippy','wprb-css-selector-generator']);
+    wp_localize_script('wprb-selection', 'WPRB', compact('segments', 'selections', 'customizations', 'strings', 'page'));
   }
 }
 
