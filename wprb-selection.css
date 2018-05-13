@@ -1,0 +1,12 @@
+.wprb-add-selection {
+  background-color: LightSkyBlue;
+  border: 2px solid Red;
+  cursor: pointer;
+}
+
+.wprb-selection-added {
+  background-color: Lime;
+  border: 2px solid Red;
+  cursor: pointer; 
+}
+
