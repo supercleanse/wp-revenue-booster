@@ -32,6 +32,7 @@ jQuery(document).ready(function ($) {
   };
 
   var wprb_show_tooltip = function(target) {
+    // TODO: Add update target support
     tippy(target, {arrow: true});
   }
 
@@ -48,6 +49,30 @@ jQuery(document).ready(function ($) {
 
     wprb_show_tooltip(target);
   };
+
+  // Register events on modal open and do some search and replace
+  $('body').on($.modal.OPEN, function(event, modal) {
+    $(modal.$elm).find('button.wprb-save-customization').on('click', function(e) {
+      // TODO: How do we get the modal object and the selector?
+      console.log('WORD COLSING!');
+
+      var selector = $(this).data('selector');
+      var target = $(selector);
+      console.log('target',target);
+      var selector = wprb_get_selector(target);
+
+      console.log("SELECTOR", selector);
+
+      WPRB.selections.push(selector);
+
+      // TODO: AJAX save
+
+      $(target).addClass('wprb-selection-added');
+      $(target).attr('title', WPRB.strings['remove_selection']);
+
+      $.modal.close();
+    });
+  });
 
   var wprb_click_text = function(target) {
     var selector = wprb_get_selector(target);
@@ -70,12 +95,16 @@ jQuery(document).ready(function ($) {
       $(target).attr('title', WPRB.strings['selection_added']);
       wprb_show_tooltip(target);
 
-      WPRB.selections.push(selector);
+      this.blur();
+      var html = '<div><h1>Heya There Buddy!</h1><div>Bevis</div><div><button class="wprb-save-customization" data-selector="' + selector + '">Save</button></div>';
+      $(html).appendTo($('body')).modal({fadeDuration: 250});
+
+      //WPRB.selections.push(selector);
 
       // TODO: AJAX Call to add selection
 
-      $(target).addClass('wprb-selection-added');
-      $(target).attr('title', WPRB.strings['remove_selection']);
+      //$(target).addClass('wprb-selection-added');
+      //$(target).attr('title', WPRB.strings['remove_selection']);
     }
   };
 
