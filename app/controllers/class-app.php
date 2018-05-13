@@ -59,6 +59,8 @@ class App extends lib\Base_Ctrl {
 
     $selections = array_keys($customizations);
 
+    $popup = lib\View::get_string('customizations-popup');
+
     wp_register_style('wprb-jquerymodal', 'https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css');
     wp_enqueue_style('wprb-selection', base\CSS_URL . '/wprb-selection.css',['wprb-jquerymodal']);
 
@@ -66,7 +68,7 @@ class App extends lib\Base_Ctrl {
     wp_register_script('wprb-css-selector-generator', base\JS_URL . '/lib/css-selector-generator.min.js');
     wp_register_script('wprb-jquerymodal', 'https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js', ['jquery']);
     wp_enqueue_script('wprb-selection', base\JS_URL . '/wprb-selection.js', ['jquery','wprb-tippy','wprb-css-selector-generator','wprb-jquerymodal']);
-    wp_localize_script('wprb-selection', 'WPRB', compact('segments', 'selections', 'customizations', 'strings', 'page'));
+    wp_localize_script('wprb-selection', 'WPRB', compact('segments', 'selections', 'customizations', 'strings', 'page','popup'));
   }
 }
 
