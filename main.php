@@ -76,12 +76,21 @@ class WP_Revenue_Booster {
       ]
     ];
 
+    $strings = [
+      'add_selection' => __('Click to Add Customization'),
+      'selection_added' => __('Customization Added'),
+      'remove_selection' => __('Click to Remove Customization'),
+      'selection_removed' => __('Customization Removed')
+    ];
+
+    $selections = array_keys($customizations);
+
     wp_enqueue_style('wprb-selection', WPRB_URL . '/wprb-selection.css');
 
     wp_register_script('wprb-tippy', 'https://unpkg.com/tippy.js@2.5.2/dist/tippy.all.min.js');
     wp_register_script('wprb-css-selector-generator', WPRB_URL . '/lib/css-selector-generator.min.js');
     wp_enqueue_script('wprb-selection', WPRB_URL . '/wprb-selection.js', ['jquery','wprb-tippy','wprb-css-selector-generator']);
-    wp_localize_script('wprb-selection', 'WPRB', compact('segments', 'customizations'));
+    wp_localize_script('wprb-selection', 'WPRB', compact('segments', 'selections', 'customizations', 'strings'));
   }
 }
 
