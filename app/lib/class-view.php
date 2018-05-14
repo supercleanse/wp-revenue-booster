@@ -4,14 +4,18 @@ namespace wp_revenue_booster\lib;
 if(!defined('ABSPATH')) {die('You are not allowed to call this page directly.');}
 
 use wp_revenue_booster as base;
-use wp_revenue_booster\controllers as ctrl;
+use wp_revenue_booster\controllers as ctrls;
 use wp_revenue_booster\models as model;
 
 class View {
   public static function file($slug,$paths=array()) {
     $paths = (empty($paths) ? self::paths() : $paths);
 
-    $find = 'template-' . $slug . '.php';
+    $find = $slug . '.php';
+
+    // the filename will always be prepended with 'template-'
+    // as per WordPress Code Style Guidelines
+    $find = preg_replace('#/([^/]*)$#','/template-$1',$find);
 
     if(!preg_match('#^/#', $find)) { $find = '/' . $find; }
 

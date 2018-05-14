@@ -14,7 +14,7 @@ namespace wp_revenue_booster;
 if(!defined('ABSPATH')) {die('You are not allowed to call this page directly.');}
 
 use \wp_revenue_booster\lib as lib;
-use \wp_revenue_booster\controllers as ctrl;
+use \wp_revenue_booster\controllers as ctrls;
 
 define(__NAMESPACE__ . '\ROOT_NAMESPACE', __NAMESPACE__);
 define(ROOT_NAMESPACE . '\CTRLS_NAMESPACE', ROOT_NAMESPACE . '\controllers');
@@ -27,6 +27,7 @@ define(ROOT_NAMESPACE . '\SLUG', 'wp-revenue-booster');
 define(ROOT_NAMESPACE . '\SLUG_KEY', 'wprb');
 define(ROOT_NAMESPACE . '\PATH', WP_PLUGIN_DIR . '/' . SLUG);
 define(ROOT_NAMESPACE . '\CTRLS_PATH', PATH . '/app/controllers');
+define(ROOT_NAMESPACE . '\HELPERS_PATH', PATH . '/app/helpers');
 define(ROOT_NAMESPACE . '\MODELS_PATH', PATH . '/app/models');
 define(ROOT_NAMESPACE . '\LIB_PATH', PATH . '/app/lib');
 define(ROOT_NAMESPACE . '\VIEWS_PATH', PATH . '/app/views');
@@ -39,6 +40,8 @@ define(ROOT_NAMESPACE . '\URL', preg_replace('/^https?:/', "{$wprb_url_protocol}
 define(ROOT_NAMESPACE . '\JS_URL', URL . '/js');
 define(ROOT_NAMESPACE . '\CSS_URL', URL . '/css');
 
+define(ROOT_NAMESPACE . '\DB_VERSION', 3);
+
 // Cookie the user immediately if they aren't already cookied
 // V2 Modify the cookie based on customer usage
 // Cookie should store:
@@ -46,12 +49,6 @@ define(ROOT_NAMESPACE . '\CSS_URL', URL . '/css');
 // - Device
 // - OS
 // - Browser
-//
-// When in select mode (?wprb-select):
-// - insert "?wprb-select" into every internal link when in select mode
-// - change background color or border or both on hover
-// - on click, popup interface
-// - :
 //
 
 /**
@@ -110,14 +107,15 @@ function autoloader($class_name) {
     else if(0 === strpos($class_name, LIB_NAMESPACE . '\.+_Exception')) {
       $filepath = LIB_PATH."/Exceptions.php";
     }
+    else if(0 === strpos($class_name, HELPERS_NAMESPACE)) {
+      $filepath = HELPERS_PATH."/{$file_name}.php";
+    }
     else if(0 === strpos($class_name, MODELS_NAMESPACE)) {
       $filepath = MODELS_PATH."/{$file_name}.php";
     }
     else if(0 === strpos($class_name, LIB_NAMESPACE)) {
       $filepath = LIB_PATH."/{$file_name}.php";
     }
-
-    error_log("WPRB Autoload: {$filepath}");
 
     if(file_exists($filepath)) {
       require_once($filepath);
@@ -135,13 +133,13 @@ if( is_array(spl_autoload_functions()) &&
 spl_autoload_register(ROOT_NAMESPACE . '\autoloader');
 
 // Gotta load the language before everything else
-//ctrl\App::load_language();
+//ctrls\App::load_language();
 
 // Instansiate Ctrls
 lib\Ctrl_Factory::all();
 
 // Setup screens
-//ctrl\App::setup_menus();
+ctrls\App::setup_menus();
 
 register_activation_hook(SLUG, function() { require_once(LIB_PATH . "/activation.php"); });
 register_deactivation_hook(SLUG, function() { require_once(LIB_PATH . "/deactivation.php"); });

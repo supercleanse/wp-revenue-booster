@@ -4,7 +4,7 @@ namespace wp_revenue_booster\lib;
 if(!defined('ABSPATH')) {die('You are not allowed to call this page directly.');}
 
 use wp_revenue_booster as base;
-use wp_revenue_booster\controllers as ctrl;
+use wp_revenue_booster\controllers as ctrls;
 use wp_revenue_booster\models as model;
 
 class Utils {

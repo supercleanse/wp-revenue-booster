@@ -14,7 +14,8 @@ class Db {
     $this->prefix = $wpdb->prefix . base\SLUG_KEY . '_';
 
     // Tables
-    // $this->urls = "{$this->prefix}urls";
+    $this->customizations = "{$this->prefix}customizations";
+    $this->segment_rules  = "{$this->prefix}segment_rules";
   }
 
   public static function fetch($force = false) {
@@ -67,7 +68,41 @@ class Db {
 
       require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 
-      // TODO: Custom tables if / when we need them
+      /* Create/Upgrade Segment_Rules Table */
+      $segment_rules = "
+        CREATE TABLE {$this->segment_rules} (
+          id int(11) NOT NULL auto_increment,
+          rule_type varchar(32) default NULL,
+          rule_operator varchar(32) default 'is',
+          rule_condition varchar(32) default NULL,
+          segment_id int(11) default NULL,
+          PRIMARY KEY  (id),
+          KEY rule_type (rule_type),
+          KEY rule_operator (rule_operator),
+          KEY rule_condition (rule_condition),
+          KEY segment_id (segment_id)
+        ) {$char_col};";
+ 
+      dbDelta($segment_rules);
+
+      /* Create/Upgrade Customizations Table */
+      $customizations = "
+        CREATE TABLE {$this->customizations} (
+          id int(11) NOT NULL auto_increment,
+          page_uri varchar(64) default NULL,
+          selector varchar(64) default NULL,
+          content text default NULL,
+          status varchar(32) default NULL,
+          segment_id int(11) default NULL,
+          PRIMARY KEY  (id),
+          KEY page_uri (page_uri),
+          KEY selector (selector),
+          KEY content (content),
+          KEY status (status),
+          KEY segment_id (segment_id)
+        ) {$char_col};";
+ 
+      dbDelta($customizations);
 
       $this->after_upgrade($old_db_version);
 
