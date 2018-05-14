@@ -1,0 +1,10 @@
+#wpadminbar .wprb-enter-selection-mode .ab-item:before {
+  content: "\f535";
+  top: 2px;
+}
+
+#wpadminbar .wprb-enter-selection-mode .ab-item {
+  background-color: #4B0082;
+  font-weight: bold;
+}
+

@@ -9,9 +9,15 @@ use wp_revenue_booster\controllers as ctrl;
 
 class App extends lib\Base_Ctrl {
   public function load_hooks() {
-    if(!is_admin() && array_key_exists('wprb-selection', $_REQUEST)) {
-      add_action('wp_enqueue_scripts', [$this,'enqueue_selection_scripts'], 1);
+    if(!is_admin() && lib\Utils::is_logged_in_and_an_admin() && array_key_exists('wprb-selection', $_REQUEST)) {
+      add_action('wp_enqueue_scripts', [$this,'enqueue_selection_scripts'], 10);
     }
+
+    if(!is_admin() && !array_key_exists('wprb-selection', $_REQUEST)) {
+      add_action('wp_enqueue_scripts', [$this,'enqueue_content_scripts'], 5);
+    }
+
+    add_action('admin_bar_menu', [$this,'toolbar_links'], 999);
   }
 
   public function enqueue_selection_scripts() {
@@ -70,5 +76,61 @@ class App extends lib\Base_Ctrl {
     wp_enqueue_script('wprb-selection', base\JS_URL . '/wprb-selection.js', ['jquery','wprb-tippy','wprb-css-selector-generator','wprb-jquerymodal']);
     wp_localize_script('wprb-selection', 'WPRB', compact('segments', 'selections', 'customizations', 'strings', 'page','popup'));
   }
+
+  public function enqueue_content_scripts() {
+    wp_enqueue_style('wprb-content', base\CSS_URL . '/wprb-content.css');
+    wp_enqueue_script('wprb-content', base\JS_URL . '/wprb-content.js', ['jquery']);
+  }
+
+  /**
+    * add a group of links under a parent link
+    */
+ 
+  // Add a parent shortcut link
+  public function toolbar_links($wp_admin_bar) {
+    $uri = $_SERVER['REQUEST_URI'];
+
+    // Remove the selection param
+    // If param is first of many
+    $uri = preg_replace('/\?wprb-selection&/','?',$uri);
+
+    // If param is first and only
+    $uri = preg_replace('/\?wprb-selection/','',$uri);
+
+    // If param is not first of many
+    $uri = preg_replace('/&wprb-selection/','',$uri);
+
+    $args = [];
+    if(isset($_REQUEST['wprb-selection'])) {
+      $args = [
+        'id' => 'wp-revenue-booster',
+        'title' => __('Finish Adding Dynamic Text'), 
+        'href' => $uri,
+        'meta' => [
+          'class' => 'wprb-exit-selection-mode', 
+          'title' => __('Exit WP Revenue Booster Dynamic Text Selection Mode.')
+        ]
+      ];
+    }
+    else {
+      $delim = lib\Utils::get_delim($uri);
+
+      $uri = "{$uri}{$delim}wprb-selection";
+
+      $args = [
+        'id' => 'wp-revenue-booster',
+        'title' => __('Add Dynamic Text'), 
+        'href' => $uri, 
+        'meta' => [
+          'class' => 'wprb-enter-selection-mode', 
+          'title' => __('Add Custom Dynamic Text with WP Revenue Booster')
+        ]
+      ];
+    }
+
+
+    $wp_admin_bar->add_node($args);
+  }
+ 
 }
 

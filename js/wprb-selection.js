@@ -116,7 +116,7 @@ jQuery(document).ready(function ($) {
     }
   }
 
-  $( target_elements ).hover(
+  $( target_elements ).not('#wpadminbar, #wpadminbar *').hover(
     function() {
       var txt = $(this).html();
       if(txt.length > 0 && !wprb_regex.test(txt)) {
@@ -132,7 +132,7 @@ jQuery(document).ready(function ($) {
 
   );
 
-  $( target_elements ).click(
+  $( target_elements ).not('#wpadminbar, #wpadminbar *').click(
     function(e) {
       e.preventDefault();
       var txt = $(this).html();
