@@ -52,9 +52,8 @@ jQuery(document).ready(function ($) {
 
   // Register events on modal open and do some search and replace
   $('body').on($.modal.OPEN, function(event, modal) {
-    $(modal.$elm).find('button.wprb-save-customization').on('click', function(e) {
-      // TODO: How do we get the modal object and the selector?
-      console.log('WORD COLSING!');
+    $(modal.$elm).find('form.wprb-customizations-form').on('submit', function(e) {
+      e.preventDefault();
 
       var selector = $(this).data('selector');
       var target = $(selector);
@@ -73,6 +72,16 @@ jQuery(document).ready(function ($) {
       $.modal.close();
     });
   });
+
+  var wprb_get_popup_html = function(target) {
+    var selector = wprb_get_selector(target);
+
+    tpl = WPRB.popup;
+    tpl = tpl.replace(/\{\{current-text\}\}/g,'<pre>'+$(target).html()+'</pre>');
+    tpl = tpl.replace(/\{\{selector\}\}/g,selector);
+
+    return tpl;
+  };
 
   var wprb_click_text = function(target) {
     var selector = wprb_get_selector(target);
@@ -96,7 +105,7 @@ jQuery(document).ready(function ($) {
       wprb_show_tooltip(target);
 
       this.blur();
-      var html = '<div><h1>Heya There Buddy!</h1><div>Bevis</div><div><button class="wprb-save-customization" data-selector="' + selector + '">Save</button></div>';
+      var html = wprb_get_popup_html(this);
       $(html).appendTo($('body')).modal({fadeDuration: 250});
 
       //WPRB.selections.push(selector);
