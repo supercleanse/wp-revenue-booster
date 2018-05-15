@@ -5,8 +5,21 @@
   <div>&nbsp;</div>
 
   <div>
+    <div class="description"><?php _e('Select text to customize using the WP Tool Bar on the front end of your website while logged in. Just click the button labeled "Add Dynamic Text":'); ?></div>
+    <div>&nbsp;</div>
+    <a href="<?php echo home_url(); ?>" class="button button-primary"><?php _e('Visit Site'); ?></a>
+  </div>
+
+  <div>&nbsp;</div>
+
+  <div>
+    <div class="description"><?php _e('Hopefully everything\'s going swimmingly for you with WP Revenue Booster ... but just in case you can get help here:'); ?></div>
+    <div>&nbsp;</div>
     <a href="https://wprevenuebooster.com/help" class="button button-primary"><?php _e('Get Help'); ?></a>
   </div>
+
+<?php /*
+  TODO: This is here and ready to rock once we need some options
 
   <div>&nbsp;</div>
 
@@ -28,6 +41,8 @@
       </tr>
     </table>
   </form>
+
+*/ ?>
 
 </div>
 
