@@ -14,9 +14,8 @@ class Segment extends lib\Base_Cpt_Model {
       $obj,
       self::$cpt,
       [
-        'priority'   => [ 'default' => 1,     'type' => 'integer' ],
-        'matches'    => [ 'default' => [],    'type' => 'array' ],
-        'match_type' => [ 'default' => 'all', 'type' => 'string' ]
+        'rules'           => [ 'default' => [],    'type' => 'array' ],
+        'rule_match_type' => [ 'default' => 'all', 'type' => 'string' ]
       ]
     );
 

@@ -10,9 +10,10 @@ use wp_revenue_booster\models as models;
 
 class Segments extends lib\Base_Cpt_Ctrl {
   public function load_hooks() {
-    $this->ctaxes = array();
+    $this->ctaxes = [];
 
     add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_scripts'));
+    add_action('save_post_' . models\Segment::$cpt, [ $this, 'save_postdata' ]);
   }
 
   public function register_post_type() {
@@ -53,6 +54,18 @@ class Segments extends lib\Base_Cpt_Ctrl {
   }
 
   public function add_meta_boxes() {
+    add_meta_box(
+      'wprb-segment-rules',
+      __('Rules', 'wp-revenue-booster'),
+      [$this, 'meta_box'],
+      models\Segment::$cpt,
+      'normal'
+    );
+  }
+
+  public function meta_box($obj) {
+    $segment = new models\Segment($obj->ID);
+    lib\View::render('admin/segments/rules/meta-box', compact('segment'));
   }
 
   public function enqueue_admin_scripts($hook) {
@@ -64,4 +77,19 @@ class Segments extends lib\Base_Cpt_Ctrl {
     }
   }
 
+  public function save_postdata($post_id) {
+    if(defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+      return $post_id;
+    }
+
+    if(defined('DOING_AJAX')) {
+      return;
+    }
+
+    if(lib\Utils::is_post_request()) {
+      $segment = new models\Segment($post_id);
+      $segment->load_from_post(true);
+      $segment->store_meta();
+    }
+  }
 }
