@@ -266,7 +266,7 @@ abstract class Ctax_Model extends Builtin_Model {
     // Get the sub class
     $class = get_called_class();
 
-    $r = new ReflectionClass($class);
+    $r = new \ReflectionClass($class);
     $ctax = $r->getStaticPropertyValue('ctax');
 
     return $db->get_count($wpdb->terms,array('taxonomy'=>$ctax));
@@ -283,7 +283,7 @@ abstract class Ctax_Model extends Builtin_Model {
                                         $wheres=array() ) {
     global $wpdb;
 
-    $rc = new ReflectionClass($class);
+    $rc = new \ReflectionClass($class);
     $obj = $rc->newInstance();
     $ctax = $rc->getStaticPropertyValue('ctax');
 

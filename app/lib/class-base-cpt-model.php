@@ -164,6 +164,21 @@ abstract class Base_Cpt_Model extends Base_Builtin_Model {
     return apply_filters(base\SLUG_KEY.'_cpt_model_url', "{$link}{$args}", $this);
   }
 
+  public static function get_one($args) {
+    $class = get_called_class();
+    return self::get_one_by_class($class,$args);
+  }
+
+  public static function get_all($order_by='',$limit='',$args=array()) {
+    $class = get_called_class();
+    return self::get_all_by_class($class,$order_by,$limit,$args);
+  }
+
+  public static function get_count($args=array()) {
+    $class = get_called_class();
+    return self::get_count_by_class($class,$args);
+  }
+
   protected static function get_one_by_class($class, $args) {
     if(!is_numeric($args) && !is_array($args) && !is_object($args)) {
       return false;
@@ -254,7 +269,7 @@ abstract class Base_Cpt_Model extends Base_Builtin_Model {
     // Get the sub class
     //$class = get_called_class();
 
-    $r = new ReflectionClass($class);
+    $r = new \ReflectionClass($class);
     $cpt = $r->getStaticPropertyValue('cpt');
 
     return $db->get_count($wpdb->posts,array('post_type'=>$cpt));
@@ -271,7 +286,7 @@ abstract class Base_Cpt_Model extends Base_Builtin_Model {
                                         $wheres=array() ) {
     global $wpdb;
 
-    $rc = new ReflectionClass($class);
+    $rc = new \ReflectionClass($class);
     $obj = $rc->newInstance();
 
     $attrs = $obj->get_meta_attrs();

@@ -9,9 +9,9 @@ jQuery(document).ready(function ($) {
   var selector_generator = new CssSelectorGenerator;
 
   // 1. Go over customizations an add wprb-selection-added and "click to add customization" tooltip
-  // 2. On click of an element already in selections, remove from WPRB.selections, AJAX call to remove on server, remove wprb-selection-added and show delayed/fade tooltip "Selection Removed"
+  // 2. On click of an element already in selections, remove from WPRB_Customization.selections, AJAX call to remove on server, remove wprb-selection-added and show delayed/fade tooltip "Selection Removed"
   // 3. On hover add wprb-add-selection and "click to remove customization" tooltip
-  // 4. On Click of a normal element, add to WPRB.selections, AJAX call to add on server, add wprb-selection-added, remove wprb-add-selection and show delayed/fade tooltip "Selection Added"
+  // 4. On Click of a normal element, add to WPRB_Customization.selections, AJAX call to add on server, add wprb-selection-added, remove wprb-add-selection and show delayed/fade tooltip "Selection Added"
 
   // Scrub our highlight classes before trying to get a selector
   var wprb_get_selector = function(target) {
@@ -39,11 +39,11 @@ jQuery(document).ready(function ($) {
   var wprb_hover_over_text = function(target) {
     var selector = wprb_get_selector(target);
 
-    if($.inArray(selector, WPRB.selections) !== -1) {
-      //$(target).attr('title', WPRB.strings['remove_selection']);
+    if($.inArray(selector, WPRB_Customization.selections) !== -1) {
+      //$(target).attr('title', WPRB_Customization.strings['remove_selection']);
     }
     else {
-      $(target).attr('title', WPRB.strings['add_selection']);
+      $(target).attr('title', WPRB_Customization.strings['add_selection']);
       $(target).addClass('wprb-add-selection');
     }
 
@@ -62,12 +62,12 @@ jQuery(document).ready(function ($) {
 
       console.log("SELECTOR", selector);
 
-      WPRB.selections.push(selector);
+      WPRB_Customization.selections.push(selector);
 
       // TODO: AJAX save
 
       $(target).addClass('wprb-selection-added');
-      $(target).attr('title', WPRB.strings['remove_selection']);
+      $(target).attr('title', WPRB_Customization.strings['remove_selection']);
 
       $.modal.close();
     });
@@ -76,7 +76,7 @@ jQuery(document).ready(function ($) {
   var wprb_get_popup_html = function(target) {
     var selector = wprb_get_selector(target);
 
-    tpl = WPRB.popup;
+    tpl = WPRB_Customization.popup;
     tpl = tpl.replace(/\{\{current-text\}\}/g,'<pre>'+$(target).html()+'</pre>');
     tpl = tpl.replace(/\{\{selector\}\}/g,selector);
 
@@ -86,14 +86,14 @@ jQuery(document).ready(function ($) {
   var wprb_click_text = function(target) {
     var selector = wprb_get_selector(target);
 
-    if($.inArray(selector, WPRB.selections) !== -1) {
+    if($.inArray(selector, WPRB_Customization.selections) !== -1) {
       $(target).removeClass('wprb-selection-added');
-      $(target).attr('title', WPRB.strings['selection_removed']);
+      $(target).attr('title', WPRB_Customization.strings['selection_removed']);
       wprb_show_tooltip(target);
 
-      // Remove selection from WPRB.selections
-      var selection_index = WPRB.selections.indexOf(selector);
-      WPRB.selections.splice(selection_index, 1);
+      // Remove selection from WPRB_Customization.selections
+      var selection_index = WPRB_Customization.selections.indexOf(selector);
+      WPRB_Customization.selections.splice(selection_index, 1);
 
       // TODO: AJAX Call to remove selection
 
@@ -101,27 +101,27 @@ jQuery(document).ready(function ($) {
     }
     else {
       $(target).removeClass('wprb-add-selection');
-      $(target).attr('title', WPRB.strings['selection_added']);
+      $(target).attr('title', WPRB_Customization.strings['selection_added']);
       wprb_show_tooltip(target);
 
       this.blur();
       var html = wprb_get_popup_html(this);
       $(html).appendTo($('body')).modal({fadeDuration: 250});
 
-      //WPRB.selections.push(selector);
+      //WPRB_Customization.selections.push(selector);
 
       // TODO: AJAX Call to add selection
 
       //$(target).addClass('wprb-selection-added');
-      //$(target).attr('title', WPRB.strings['remove_selection']);
+      //$(target).attr('title', WPRB_Customization.strings['remove_selection']);
     }
   };
 
-  for(var i=0; i < WPRB.selections.length; i++) {
-    var selector = WPRB.selections[i];
+  for(var i=0; i < WPRB_Customization.selections.length; i++) {
+    var selector = WPRB_Customization.selections[i];
     if($(selector).length > 0) { // Element exists?
       $(selector).addClass('wprb-selection-added');
-      $(selector).attr('title', WPRB.strings['remove_selection']);
+      $(selector).attr('title', WPRB_Customization.strings['remove_selection']);
     }
   }
 

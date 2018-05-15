@@ -150,8 +150,8 @@ abstract class Base_Model {
         //$obj = $class::get_one((int)$obj);
         //$obj = call_user_func("{$class}::get_one",(int)$obj);
 
-        // ReflectionMethod is less error prone than the other two methods above
-        $rm = new ReflectionMethod($class, 'get_one');
+        // \ReflectionMethod is less error prone than the other two methods above
+        $rm = new \ReflectionMethod($class, 'get_one');
         $obj = $rm->invoke(null, (int)$obj);
       }
 
@@ -188,7 +188,7 @@ abstract class Base_Model {
 
     $class = get_class($this);
 
-    $r = new ReflectionClass($class);
+    $r = new \ReflectionClass($class);
     $obj = $r->newInstance();
 
     $obj->load_from_array($values);

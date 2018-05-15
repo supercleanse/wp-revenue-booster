@@ -31,8 +31,7 @@ class Customization extends lib\Base_Model {
     $this->validate_not_empty($this->selector, 'selector');
     $this->validate_not_empty($this->content, 'content');
     $this->validate_not_empty($this->segment_id, 'segment_id');
-    $this->validate_is_in_array($this->status, $this->statuses, 'status');
-    $this->validate_is_numeric($this->segment_id, 0, null, 'segment_id');
+    $this->validate_is_in_array($this->status, $this->statuses, 'status'); $this->validate_is_numeric($this->segment_id, 0, null, 'segment_id');
   }
 
   public function sanitize() {
@@ -84,8 +83,28 @@ class Customization extends lib\Base_Model {
     return $db->update_record($db->customizations,$obj->id,(array)$obj->get_values());
   }
 
-  public static function get_all_by_page_uri($page_uri, $order_by='', $limit='') {
+  public static function get_all_by_page_uri($page_uri, $order_by='selector', $limit='') {
     return self::get_all($order_by, $limit, compact('page_uri'));
+  }
+
+  public static function get_page_customizations($page_uri) {
+    $cust = self::get_all_by_page_uri($page_uri);
+
+    if(empty($cust)) { return []; }
+
+    $customizations = [];
+    $last_selector = '';
+    foreach($customizations as $c) {
+      if($c->selector != $last_selector) {
+        $customizations[$c->selector] = [];
+      }
+
+      $customizations[$c->selector][] = $c;
+
+      $last_selector = $c->selector;
+    }
+
+    return $customizations;
   }
 }
 

@@ -18,36 +18,6 @@ class Customizations extends lib\Base_Ctrl {
   }
 
   public function enqueue_selection_scripts() {
-    // TODO: Replace this with the actual segments
-    $segments = [
-      101 => "Tablet Users",
-      102 => "Cart Abandoners",
-      103 => "Canadian Tablet Users",
-      104 => "Mobile Users",
-      107 => "Italian Mobile Users",
-      110 => "PC Users"
-    ];
-
-    // TODO: Replace this with the actual customizations
-    $customizations = [
-      '.entry-content > :nth-child(1)' => [
-        [
-          'segment' => 103,
-          'text' => 'You are a Canadian Tablet User ... Thanks for being AWESOME!'
-        ],
-        [
-          'segment' => 102,
-          'text' => 'You are a Cart Abandoner ... How are you here?'
-        ]
-      ],
-      '.entry-title' => [
-        [
-          'segment' => 102,
-          'text' => 'You Dirty Rotten Cart Abandoner ... Just Purchase Already!'
-        ]
-      ]
-    ];
-
     $strings = [
       'add_selection' => __('Click to Add Customization'),
       'selection_added' => __('Customization Added'),
@@ -57,12 +27,14 @@ class Customizations extends lib\Base_Ctrl {
 
     // Get a clean page url with appropriate query string
     $home = preg_replace('/^https?:/', 'https?:', home_url());
-    $page = preg_replace('!' . preg_quote($home,'!') . '!', '', $_SERVER['REQUEST_URI']); // Remove full home path from page
-    $page = preg_replace('/[\?&]wprb-selection/', '', $page); // Remove wprb-selection param
-
-    $selections = array_keys($customizations);
+    $page_uri = preg_replace('!' . preg_quote($home,'!') . '!', '', $_SERVER['REQUEST_URI']); // Remove full home path from page_uri
+    $page_uri = preg_replace('/[\?&]wprb-selection/', '', $page_uri); // Remove wprb-selection param
 
     $popup = lib\View::get_string('customizations-popup');
+
+    $customizations = models\Customization::get_page_customizations($page_uri);
+    $selections = array_keys($customizations);
+    $segments = models\Segment::get_all();
 
     wp_register_style('wprb-jquerymodal', 'https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css');
     wp_enqueue_style('wprb-selection', base\CSS_URL . '/selection.css',['wprb-jquerymodal']);
@@ -71,7 +43,7 @@ class Customizations extends lib\Base_Ctrl {
     wp_register_script('wprb-css-selector-generator', base\JS_URL . '/lib/css-selector-generator.min.js');
     wp_register_script('wprb-jquerymodal', 'https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js', ['jquery']);
     wp_enqueue_script('wprb-selection', base\JS_URL . '/selection.js', ['jquery','wprb-tippy','wprb-css-selector-generator','wprb-jquerymodal']);
-    wp_localize_script('wprb-selection', 'WPRB', compact('segments', 'selections', 'customizations', 'strings', 'page','popup'));
+    wp_localize_script('wprb-selection', 'WPRB_Customization', compact('segments', 'selections', 'customizations', 'strings', 'page_uri','popup'));
   }
 
   // Add a parent shortcut link

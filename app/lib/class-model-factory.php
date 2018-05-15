@@ -15,7 +15,7 @@ class Model_Factory {
     }
 
     // We'll let the autoloader handle including files containing these classes
-    $r = new ReflectionClass($class);
+    $r = new \ReflectionClass($class);
     $obj = $r->newInstanceArgs(array($id));
 
     if(isset($obj->ID) && $obj->ID <= 0) {

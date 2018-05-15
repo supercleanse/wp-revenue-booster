@@ -4,6 +4,7 @@ namespace wp_revenue_booster\lib;
 if(!defined('ABSPATH')) {die('You are not allowed to call this page directly.');}
 
 use wp_revenue_booster as base;
+use wp_revenue_booster\lib as lib;
 
 class Db {
   public $prefix;
@@ -469,7 +470,7 @@ class Db {
 
   public function get_table_for_model($model) {
     global $wpdb;
-    $table = strtolower(preg_replace('/^'.base\MODEL_NAMESPACE.'\(.*)/', '$1', $model));
+    $table = strtolower(lib\Utils::class_basename($model));
 
     // TODO: We need to get true inflections working here eventually ...
     //       just tacking on an 's' like this is sketchy

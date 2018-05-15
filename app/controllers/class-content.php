@@ -18,6 +18,7 @@ class Content extends lib\Base_Ctrl {
   public function enqueue_content_scripts() {
     wp_enqueue_style('wprb-content', base\CSS_URL . '/content.css');
     wp_enqueue_script('wprb-content', base\JS_URL . '/content.js', ['jquery']);
+    wp_localize_script('wprb-content', 'WPRB_Content', []);
   }
 
 }
