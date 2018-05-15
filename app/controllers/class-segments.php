@@ -7,6 +7,7 @@ use wp_revenue_booster as base;
 use wp_revenue_booster\lib as lib;
 use wp_revenue_booster\controllers as ctrls;
 use wp_revenue_booster\models as models;
+use wp_revenue_booster\helpers as helpers;
 
 class Segments extends lib\Base_Cpt_Ctrl {
   public function load_hooks() {
@@ -89,14 +90,83 @@ class Segments extends lib\Base_Cpt_Ctrl {
 
     $segment = new models\Segment($post_ID);
 
+    $rule_filters = [
+      [
+        'id' => 'logged_in',
+        'label' => __('Logged In'),
+        'type' => 'integer',
+        'input' => 'radio',
+        'values' => [
+          1 => __('Yes'),
+          0 => __('No')
+        ],
+        'operators' => ['equal']
+      ],
+      [
+        'id' => 'returning_visitor',
+        'label' => __('Returning Visitor'),
+        'type' => 'integer',
+        'input' => 'radio',
+        'values' => [
+          1 => __('Yes'),
+          0 => __('No')
+        ],
+        'operators' => ['equal']
+      ],
+      [
+        'id' => 'device',
+        'label' => __('Device'),
+        'type' => 'string',
+        'input' => 'select',
+        'values' => [
+          'desktop' => __('Desktop'),
+          'mobile'  => __('Mobile'),
+          'phone'   => __('Phone'),
+          'tablet'  => __('Tablet')
+        ],
+        'operators' => ['equal','not_equal']
+      ],
+      [
+        'id' => 'browser',
+        'label' => __('Browser'),
+        'type' => 'string',
+        'input' => 'select',
+        'values' => [
+          'silk'     => __('Amazon Silk'),
+          'android'  => __('Android'),
+          'chrome'   => __('Chrome'),
+          'chromium' => __('Chromium'),
+          'edge'     => __('Edge'),
+          'firefox'  => __('Firefox'),
+          'ie'       => __('Internet Explorer'),
+          'kindle'   => __('Kindle'),
+          'opera'    => __('Opera'),
+          'coast'    => __('Opera Coast'),
+          'safari'   => __('Safari'),
+        ],
+        'operators' => ['equal','not_equal']
+      ],
+      [
+        'id' => 'country',
+        'label' => __('Country'),
+        'type' => 'string',
+        'input' => 'select',
+        'values' => helpers\App::get_countries(),
+        'operators' => ['equal','not_equal']
+      ],
+      [
+        'id' => 'state',
+        'label' => __('State'),
+        'type' => 'string',
+        'input' => 'select',
+        'values' => helpers\App::get_states(),
+        'operators' => ['equal','not_equal']
+      ],
+    ];
+
     return [
       'rules' => $segment->rules,
-      'tpls' => [
-        'row' => lib\View::get_string('admin/segments/rules/row', compact('segment')),
-        'type' => lib\View::get_string('admin/segments/rules/type', compact('segment')),
-        'operators' => $this->get_templates('admin/segments/rules/operators', compact('segment')),
-        'conditions' => $this->get_templates('admin/segments/rules/conditions', compact('segment'))
-      ],
+      'rule_filters' => $rule_filters,
       'submit_button_text' => __('Update', 'wp-revenue-booster')
     ];
   }
@@ -105,8 +175,12 @@ class Segments extends lib\Base_Cpt_Ctrl {
     global $current_screen;
 
     if($current_screen->post_type == models\Segment::$cpt) {
-      wp_enqueue_style('wprb-admin-segments', base\CSS_URL . '/admin-segments.css');
-      wp_enqueue_script('wprb-admin-segments', base\JS_URL . '/admin-segments.js');
+      wp_register_style('wprb-query-builder', base\CSS_URL . '/lib/query-builder.css');
+      wp_register_style('wprb-query-builder-bs', base\CSS_URL . '/lib/query-builder-bs.css');
+      wp_enqueue_style('wprb-admin-segments', base\CSS_URL . '/admin-segments.css', ['wprb-query-builder','wprb-query-builder-bs']);
+
+      wp_register_script('wprb-query-builder', 'https://cdn.jsdelivr.net/npm/jQuery-QueryBuilder/dist/js/query-builder.standalone.min.js');
+      wp_enqueue_script('wprb-admin-segments', base\JS_URL . '/admin-segments.js', ['jquery','wprb-query-builder']);
       wp_localize_script('wprb-admin-segments', 'WPRB_Segment', $this->get_admin_script_args());
     }
   }
