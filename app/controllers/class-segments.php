@@ -166,6 +166,7 @@ class Segments extends lib\Base_Cpt_Ctrl {
 
     return [
       'rules' => $segment->rules,
+      'rules_str' => $segment->rules_str,
       'rule_filters' => $rule_filters,
       'submit_button_text' => __('Update', 'wp-revenue-booster')
     ];
@@ -196,6 +197,12 @@ class Segments extends lib\Base_Cpt_Ctrl {
 
     if(lib\Utils::is_post_request()) {
       $segment = new models\Segment($post_id);
+
+      if(isset($_POST[$segment->rules_str])) {
+        $rules = $_POST[$segment->rules_str];
+        $_POST[$segment->rules_str] = json_decode( stripslashes($rules) );
+      }
+      
       $segment->load_from_post(true);
       $segment->store_meta();
     }
