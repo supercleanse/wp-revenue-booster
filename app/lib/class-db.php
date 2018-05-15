@@ -97,7 +97,6 @@ class Db {
           PRIMARY KEY  (id),
           KEY page_uri (page_uri),
           KEY selector (selector),
-          KEY content (content),
           KEY status (status),
           KEY segment_id (segment_id)
         ) {$char_col};";
@@ -108,7 +107,7 @@ class Db {
 
       /***** SAVE DB VERSION *****/
       //Let's only run this query if we're actually updating
-      update_option(base\SLUG_KEY.'_db_version', base\DB_VERSION);
+      //update_option(base\SLUG_KEY.'_db_version', base\DB_VERSION);
     }
   }
 

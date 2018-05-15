@@ -40,7 +40,7 @@ define(ROOT_NAMESPACE . '\URL', preg_replace('/^https?:/', "{$wprb_url_protocol}
 define(ROOT_NAMESPACE . '\JS_URL', URL . '/js');
 define(ROOT_NAMESPACE . '\CSS_URL', URL . '/css');
 
-define(ROOT_NAMESPACE . '\DB_VERSION', 3);
+define(ROOT_NAMESPACE . '\DB_VERSION', 5);
 
 // Cookie the user immediately if they aren't already cookied
 // V2 Modify the cookie based on customer usage

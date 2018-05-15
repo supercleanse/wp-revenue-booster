@@ -459,6 +459,12 @@ class Utils {
     return false;
   }
 
+  public static function class_basename($class) {
+    $path = explode('\\',$class);
+    $basename = array_pop($path);
+    return $basename;
+  }
+
 /* PLUGGABLE FUNCTIONS AS TO NOT STEP ON OTHER PLUGINS' CODE */
   public static function get_currentuserinfo() {
     Utils::_include_pluggables('wp_get_current_user');

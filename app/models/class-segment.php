@@ -15,7 +15,7 @@ class Segment extends lib\Base_Cpt_Model {
       self::$cpt,
       [
         'rules'           => [ 'default' => [],    'type' => 'array' ],
-        'rule_match_type' => [ 'default' => 'all', 'type' => 'string' ]
+        'match_type' => [ 'default' => 'all', 'type' => 'string' ]
       ]
     );
 

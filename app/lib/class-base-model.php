@@ -4,6 +4,7 @@ namespace wp_revenue_booster\lib;
 if(!defined('ABSPATH')) {die('You are not allowed to call this page directly.');}
 
 use wp_revenue_booster as base;
+use wp_revenue_booster\lib as lib;
 
 abstract class Base_Model {
   protected $rec, $attrs, $defaults, $custom_attr_keys;
@@ -450,7 +451,7 @@ abstract class Base_Model {
 
     if(array_key_exists($attr, $attrs)) {
       $class = get_class($this);
-      $model_str = strtolower(preg_replace('/^'.base\ROOT_NAMESPACE.'(.*)/', '$1', $class));
+      $model_str = strtolower(lib\Utils::class_basename($class));
       return "_".base\SLUG_KEY."_{$model_str}_{$attr}";
     }
 
@@ -463,7 +464,7 @@ abstract class Base_Model {
     }
 
     $class = get_class($this);
-    $model_str = strtolower(preg_replace('/^'.base\ROOT_NAMESPACE.'(.*)/', '$1', $class));
+    $model_str = strtolower(lib\Utils::class_basename($class));
     $attrs = $this->get_attrs();
 
     if( preg_match("/^_".base\SLUG_KEY."_{$model_str}_(.*)$/", $key, $m) &&

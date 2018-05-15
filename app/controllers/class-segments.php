@@ -68,12 +68,46 @@ class Segments extends lib\Base_Cpt_Ctrl {
     lib\View::render('admin/segments/rules/meta-box', compact('segment'));
   }
 
+  private function get_templates($views_path, $args) {
+    $templates = @glob(base\VIEWS_PATH . "/{$views_path}/template-*.php", GLOB_NOSORT);
+
+    extract($args);
+
+    $tpls = [];
+    foreach($templates as $template) {
+      $template_name = preg_replace('!template-(.*)\.php!', '$1', basename($template));
+      ob_start();
+      require($template);
+      $tpls[$template_name] = ob_get_clean();
+    }
+
+    return $tpls;
+  }
+
+  public function get_admin_script_args() {
+    global $post_ID;
+
+    $segment = new models\Segment($post_ID);
+
+    return [
+      'rules' => $segment->rules,
+      'tpls' => [
+        'row' => lib\View::get_string('admin/segments/rules/row', compact('segment')),
+        'type' => lib\View::get_string('admin/segments/rules/type', compact('segment')),
+        'operators' => $this->get_templates('admin/segments/rules/operators', compact('segment')),
+        'conditions' => $this->get_templates('admin/segments/rules/conditions', compact('segment'))
+      ],
+      'submit_button_text' => __('Update', 'wp-revenue-booster')
+    ];
+  }
+
   public function enqueue_admin_scripts($hook) {
-    if( isset($_REQUEST['post_type']) && $_REQUEST['post_type']==models\Segment::$cpt &&
-        ( $hook == 'edit.php' || $hook == 'post-new.php' ) ) {
+    global $current_screen;
+
+    if($current_screen->post_type == models\Segment::$cpt) {
       wp_enqueue_style('wprb-admin-segments', base\CSS_URL . '/admin-segments.css');
       wp_enqueue_script('wprb-admin-segments', base\JS_URL . '/admin-segments.js');
-      wp_localize_script('wprb-admin-segments', 'WPRB_Admin', []);
+      wp_localize_script('wprb-admin-segments', 'WPRB_Segment', $this->get_admin_script_args());
     }
   }
 
