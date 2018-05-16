@@ -15,7 +15,8 @@ class View {
 
     // the filename will always be prepended with 'template-'
     // as per WordPress Code Style Guidelines
-    $find = preg_replace('#/([^/]*)$#','/template-$1',$find);
+    $find = preg_replace('#^([^/]*)$#','template-$1',$find); // if no telescoping
+    $find = preg_replace('#/([^/]*)$#','/template-$1',$find); // When there's telescoping
 
     if(!preg_match('#^/#', $find)) { $find = '/' . $find; }
 

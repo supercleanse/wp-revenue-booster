@@ -1,0 +1,18 @@
+<?php if(!defined('ABSPATH')) {die('You are not allowed to call this page directly.');} ?>
+<div class="wprb-customization-row">
+  <label><?php _e('Customization #{{index}}'); ?></label>
+  <input type="hidden" name="cust[{{index}}][id]" value="{{id}}" />
+  <div class="wprb-customization-field">
+    <label><?php _e('Segment'); ?></label>
+    <select name="cust[{{index}}][segment_id]" class="wprb-customization-segment">
+      <?php foreach($segments as $segment): ?>
+        <option value="<?php echo $segment->ID; ?>"><?php echo $segment->post_title; ?></option>
+      <?php endforeach; ?>
+    </select>
+  </div>
+  <div class="wprb-customization-field">
+    <label><?php _e('Content'); ?></label>
+    <textarea name="cust[{{index}}][content]" class="wprb-customization-content">{{content}}</textarea>
+  </div>
+</div>
+

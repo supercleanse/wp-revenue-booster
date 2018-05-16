@@ -24,3 +24,21 @@
   padding: 5px;
 }
 
+.wprb-current-text, .wprb-customization-row {
+  background-color: #eee;
+  padding: 10px;
+  margin-bottom: 15px;
+}
+
+.wprb-add-remove {
+  margin-bottom: 15px;
+}
+
+.wprb-customization-field {
+  margin-bottom: 10px;
+}
+
+.modal {
+  max-width: 1000px;
+  z-index: 10000 !important;
+}

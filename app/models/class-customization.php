@@ -9,9 +9,10 @@ class Customization extends lib\Base_Model {
   public function __construct($obj = null) {
     $this->initialize(
       [
-        'page_uri'   => [ 'type' => 'string' ],
-        'selector'   => [ 'type' => 'string' ],
-        'content'    => [ 'type' => 'string' ],
+        'id'         => [ 'type' => 'integer', 'default' => 0 ],
+        'page_uri'   => [ 'type' => 'string', 'default' => null ],
+        'selector'   => [ 'type' => 'string', 'default' => null ],
+        'content'    => [ 'type' => 'string', 'default' => null ],
         'status'     => [ 'type' => 'string', 'default' => 'active' ],
         'segment_id' => [ 'type' => 'integer', 'default' => 0 ],
       ], 

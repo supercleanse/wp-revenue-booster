@@ -7,22 +7,19 @@ use wp_revenue_booster\lib as lib;
 
 class Segment extends lib\Base_Cpt_Model {
   public static $cpt = 'mprb-segment';
-  public $match_types;
 
   public function __construct($obj = null) {
     $this->load_cpt(
       $obj,
       self::$cpt,
       [
-        'rules' => [ 'default' => [], 'type' => 'object' ],
+        'rules' => [ 'default' => [], 'type' => 'object', (object)[] ],
       ]
     );
-
-    $this->match_types = [ 'all', 'any' ];
   }
 
   public function validate() {
-    $this->validate_is_in_array($this->match_type, $this->match_types, 'match_type');
+    // Nothing to do here at this point
   }
 
   public function sanitize() {

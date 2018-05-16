@@ -30,11 +30,13 @@ class Customizations extends lib\Base_Ctrl {
     $page_uri = preg_replace('!' . preg_quote($home,'!') . '!', '', $_SERVER['REQUEST_URI']); // Remove full home path from page_uri
     $page_uri = preg_replace('/[\?&]wprb-selection/', '', $page_uri); // Remove wprb-selection param
 
-    $popup = lib\View::get_string('customizations-popup');
-
     $customizations = models\Customization::get_page_customizations($page_uri);
     $selections = array_keys($customizations);
     $segments = models\Segment::get_all();
+
+    $popup = lib\View::get_string('customizations/popup');
+
+    $popup_row = lib\View::get_string('customizations/popup-row', compact('segments'));
 
     wp_register_style('wprb-jquerymodal', 'https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css');
     wp_enqueue_style('wprb-selection', base\CSS_URL . '/selection.css',['wprb-jquerymodal']);
@@ -43,7 +45,7 @@ class Customizations extends lib\Base_Ctrl {
     wp_register_script('wprb-css-selector-generator', base\JS_URL . '/lib/css-selector-generator.min.js');
     wp_register_script('wprb-jquerymodal', 'https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js', ['jquery']);
     wp_enqueue_script('wprb-selection', base\JS_URL . '/selection.js', ['jquery','wprb-tippy','wprb-css-selector-generator','wprb-jquerymodal']);
-    wp_localize_script('wprb-selection', 'WPRB_Customization', compact('segments', 'selections', 'customizations', 'strings', 'page_uri','popup'));
+    wp_localize_script('wprb-selection', 'WPRB_Customization', compact('segments', 'selections', 'customizations', 'strings', 'page_uri','popup','popup_row'));
   }
 
   // Add a parent shortcut link

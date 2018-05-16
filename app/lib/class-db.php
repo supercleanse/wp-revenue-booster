@@ -16,7 +16,6 @@ class Db {
 
     // Tables
     $this->customizations = "{$this->prefix}customizations";
-    $this->segment_rules  = "{$this->prefix}segment_rules";
   }
 
   public static function fetch($force = false) {
@@ -68,23 +67,6 @@ class Db {
       if(empty($char_col)) { $char_col = $wpdb->get_charset_collate(); }
 
       require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-
-      /* Create/Upgrade Segment_Rules Table */
-      $segment_rules = "
-        CREATE TABLE {$this->segment_rules} (
-          id int(11) NOT NULL auto_increment,
-          rule_type varchar(32) default NULL,
-          rule_operator varchar(32) default 'is',
-          rule_condition varchar(32) default NULL,
-          segment_id int(11) default NULL,
-          PRIMARY KEY  (id),
-          KEY rule_type (rule_type),
-          KEY rule_operator (rule_operator),
-          KEY rule_condition (rule_condition),
-          KEY segment_id (segment_id)
-        ) {$char_col};";
- 
-      dbDelta($segment_rules);
 
       /* Create/Upgrade Customizations Table */
       $customizations = "

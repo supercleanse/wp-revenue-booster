@@ -8,11 +8,6 @@ jQuery(document).ready(function ($) {
   var wprb_regex = RegExp('<\s*(div|img|i|a|span|blockquote|p)\s*[> ]');
   var selector_generator = new CssSelectorGenerator;
 
-  // 1. Go over customizations an add wprb-selection-added and "click to add customization" tooltip
-  // 2. On click of an element already in selections, remove from WPRB_Customization.selections, AJAX call to remove on server, remove wprb-selection-added and show delayed/fade tooltip "Selection Removed"
-  // 3. On hover add wprb-add-selection and "click to remove customization" tooltip
-  // 4. On Click of a normal element, add to WPRB_Customization.selections, AJAX call to add on server, add wprb-selection-added, remove wprb-add-selection and show delayed/fade tooltip "Selection Added"
-
   // Scrub our highlight classes before trying to get a selector
   var wprb_get_selector = function(target) {
     var selector = selector_generator.getSelector(target);
@@ -34,7 +29,7 @@ jQuery(document).ready(function ($) {
   var wprb_show_tooltip = function(target) {
     // TODO: Add update target support
     tippy(target, {arrow: true});
-  }
+  };
 
   var wprb_hover_over_text = function(target) {
     var selector = wprb_get_selector(target);
@@ -50,38 +45,86 @@ jQuery(document).ready(function ($) {
     wprb_show_tooltip(target);
   };
 
-  // Register events on modal open and do some search and replace
-  $('body').on($.modal.OPEN, function(event, modal) {
+  var wprb_replace_vars = function(str,obj) {
+    for (var k in obj){
+      if (obj.hasOwnProperty(k)) {
+        var regexp_str = '\\\{\\\{' + k + '\\\}\\\}';
+        console.log('regexp_str',regexp_str);
+        var regexp = new RegExp(regexp_str,'g');
+        str = str.replace(regexp, obj[k]);
+      }
+    }
+
+    return str;
+  };
+
+  var wprb_save_customizations = function(form) {
+    // TODO: AJAX save
+    var form_data = $(form).serialize();
+    console.log('form_data',form_data);
+  };
+
+  var wprb_register_submit_event = function(modal) {
     $(modal.$elm).find('form.wprb-customizations-form').on('submit', function(e) {
       e.preventDefault();
 
       var selector = $(this).data('selector');
       var target = $(selector);
-      console.log('target',target);
       var selector = wprb_get_selector(target);
 
-      console.log("SELECTOR", selector);
+      //WPRB_Customization.selections.push(selector);
 
-      WPRB_Customization.selections.push(selector);
-
-      // TODO: AJAX save
+      wprb_save_customizations(this);
 
       $(target).addClass('wprb-selection-added');
       $(target).attr('title', WPRB_Customization.strings['remove_selection']);
 
       $.modal.close();
     });
-  });
+  };
 
   var wprb_get_popup_html = function(target) {
     var selector = wprb_get_selector(target);
 
-    tpl = WPRB_Customization.popup;
-    tpl = tpl.replace(/\{\{current-text\}\}/g,'<pre>'+$(target).html()+'</pre>');
-    tpl = tpl.replace(/\{\{selector\}\}/g,selector);
+    var vars = {
+      current_text: $(target).html(),
+      selector: selector
+    };
+    console.log('popup',WPRB_Customization.popup);
 
-    return tpl;
+    return wprb_replace_vars(WPRB_Customization.popup, vars);
   };
+
+  var wprb_get_popup_row_html = function(data) {
+    if(data == null) {
+      data = {};
+    }
+
+    var vars = {
+      id: data.id || '',
+      content: data.content || '',
+      index: data.index || 1
+    };
+
+    return wprb_replace_vars(WPRB_Customization.popup_row, vars);
+  };
+
+  var wprb_register_add_customization_event = function() {
+    $('.wprb-add-customizations button').click(
+      function(e) {
+        e.preventDefault();
+
+        // Ancestry path then find wprb-customizations underneath
+        // button -> span.wprb-add-customizations -> div.wprb-add-remove -> form.wprb-customizations-form
+        var cust_elem = $(this).parent().parent().parent().find('.wprb-customizations');
+        var cust_index = $(cust_elem).children().length + 1;
+        console.log('cust_index',cust_index);
+        var popup_row_html = wprb_get_popup_row_html({index: cust_index});
+
+        $(cust_elem).append(popup_row_html);
+      }
+    );
+  }
 
   var wprb_click_text = function(target) {
     var selector = wprb_get_selector(target);
@@ -100,12 +143,12 @@ jQuery(document).ready(function ($) {
       $(target).addClass('wprb-add-selection');
     }
     else {
-      $(target).removeClass('wprb-add-selection');
-      $(target).attr('title', WPRB_Customization.strings['selection_added']);
-      wprb_show_tooltip(target);
+      //$(target).removeClass('wprb-add-selection');
+      //$(target).attr('title', WPRB_Customization.strings['selection_added']);
+      //wprb_show_tooltip(target);
 
-      this.blur();
-      var html = wprb_get_popup_html(this);
+      var html = wprb_get_popup_html(target);
+      console.log('popup html',html);
       $(html).appendTo($('body')).modal({fadeDuration: 250});
 
       //WPRB_Customization.selections.push(selector);
@@ -141,6 +184,7 @@ jQuery(document).ready(function ($) {
 
   );
 
+  // Click text event handler
   $( target_elements ).not('#wpadminbar, #wpadminbar *').click(
     function(e) {
       e.preventDefault();
@@ -150,5 +194,12 @@ jQuery(document).ready(function ($) {
       }
     }
   );
+
+  // Register events on modal open and do some search and replace
+  $('body').on($.modal.OPEN, function(event, modal) {
+    wprb_register_add_customization_event();
+    wprb_register_submit_event(modal);
+  });
+
 });
 
