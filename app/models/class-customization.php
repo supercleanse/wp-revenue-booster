@@ -1,10 +1,10 @@
 <?php
-namespace wp_revenue_booster\models;
-
+namespace wp_revenue_booster\models; 
 if(!defined('ABSPATH')) {die('You are not allowed to call this page directly.');}
 
 use wp_revenue_booster as base;
 use wp_revenue_booster\lib as lib;
+use wp_revenue_booster\models as models;
 
 class Customization extends lib\Base_Model {
   public function __construct($obj = null) {
@@ -124,6 +124,60 @@ class Customization extends lib\Base_Model {
 
   public static function get_all_by_page_uri_and_selector($page_uri, $selector, $order_by='', $limit='') {
     return self::get_all($order_by, $limit, compact('page_uri','selector'));
+  }
+
+  public static function get_all_by_page_uri_and_segments($page_uri, $segment_ids=[], $order_by='', $limit='') {
+    global $wpdb;
+
+    if(is_numeric($segment_ids)) { $segment_ids = [$segment_ids]; }
+
+    if(empty($segment_ids)) { return []; }
+
+    $db = lib\Db::fetch();
+
+    $q = $wpdb->prepare("
+        SELECT c.id
+          FROM {$db->customizations} AS c
+         WHERE c.page_uri=%s
+           AND c.segment_id IN (".implode(',',$segment_ids).")
+      ",
+      $page_uri
+    );
+
+    $ids = $wpdb->get_col($q);
+
+    if(empty($ids)) {
+      return [];
+    }
+
+    $customizations = [];
+    foreach($ids as $id) {
+      $customizations[] = new models\Customization($id);
+    }
+
+    return $customizations;
+  }
+
+  public static function get_unique_customization_segments_by_page_uri($page_uri) {
+    global $wpdb;
+
+    $db = lib\Db::fetch();
+
+    $q = $wpdb->prepare("
+        SELECT DISTINCT c.segment_id
+          FROM {$db->customizations} AS c
+         WHERE c.page_uri=%s
+      ",
+      $page_uri
+    );
+
+    $ids = $wpdb->get_col($q);
+
+    if(empty($ids)) {
+      return [];
+    }
+
+    return $ids;
   }
 }
 

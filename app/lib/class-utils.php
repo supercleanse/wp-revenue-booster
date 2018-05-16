@@ -465,6 +465,16 @@ class Utils {
     return $basename;
   }
 
+  public static function get_page_uri() {
+    // Get a clean page url with appropriate query string
+    $home = preg_replace('/^(https?:)/', '$1', home_url());
+
+    // Remove full home path from page_uri
+    $page_uri = preg_replace('!' . preg_quote($home,'!') . '!', '', $_SERVER['REQUEST_URI']);
+
+    return $page_uri;
+  }
+
 /* PLUGGABLE FUNCTIONS AS TO NOT STEP ON OTHER PLUGINS' CODE */
   public static function get_currentuserinfo() {
     Utils::_include_pluggables('wp_get_current_user');

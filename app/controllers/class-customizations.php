@@ -14,7 +14,10 @@ class Customizations extends lib\Base_Ctrl {
       add_action('wp_enqueue_scripts', [$this,'enqueue_selection_scripts'], 10);
     }
 
-    add_action('admin_bar_menu', [$this,'toolbar_links'], 999);
+    // Don't show the toolbar link on the back end
+    if(!is_admin()) {
+      add_action('admin_bar_menu', [$this,'toolbar_links'], 999);
+    }
 
     add_action( 'wp_ajax_wprb_update_customizations', [$this,'ajax_update'] );
   }
@@ -25,11 +28,7 @@ class Customizations extends lib\Base_Ctrl {
       'edit_selection' => __('Click to Edit Customizations')
     ];
 
-    // Get a clean page url with appropriate query string
-    $home = preg_replace('/^https?:/', 'https?:', home_url());
-
-    // Remove full home path from page_uri
-    $page_uri = preg_replace('!' . preg_quote($home,'!') . '!', '', $_SERVER['REQUEST_URI']);
+    $page_uri = lib\Utils::get_page_uri();
     $page_uri = preg_replace('/[\?&]wprb-selection/', '', $page_uri); // Remove wprb-selection param
 
     $customizations = models\Customization::get_page_customizations($page_uri);
@@ -144,7 +143,7 @@ class Customizations extends lib\Base_Ctrl {
       // Sanitization on these happen in the model
       $customization->page_uri = $_POST['page_uri']; // Use unsanitized version to prevent double sanitization
       $customization->selector = $_POST['selector']; // Use unsanitized version to prevent double sanitization
-      $customization->content = $c['content'];
+      $customization->content = stripslashes($c['content']);
       $customization->segment_id = $c['segment_id'];
       $customization->store();
     }

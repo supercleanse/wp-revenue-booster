@@ -113,6 +113,8 @@ class Segments extends lib\Base_Cpt_Ctrl {
         ],
         'operators' => ['equal']
       ],
+
+/* TODO: Soon
       [
         'id' => 'device',
         'label' => __('Device'),
@@ -162,6 +164,7 @@ class Segments extends lib\Base_Cpt_Ctrl {
         'values' => helpers\App::get_states(),
         'operators' => ['equal','not_equal']
       ],
+ */
     ];
 
     return [
