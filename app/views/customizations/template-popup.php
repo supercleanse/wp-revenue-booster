@@ -18,7 +18,7 @@
       <div class="wprb-customizations"></div>
 
       <div class="wprb-add-remove">
-        <span class="wprb-add-customizations" title="<?php _e('Add Dynamic Text Customization'); ?>"><button><?php _e('Add'); ?></button></span>
+        <span class="wprb-add-customizations" title="<?php _e('Add Dynamic Text Customization'); ?>"><a href="">[+]</a></span>
       </div>
 
       <input type="submit" value="<?php _e('Save'); ?>" />

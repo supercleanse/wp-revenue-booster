@@ -155,7 +155,7 @@ abstract class Base_Model {
         $obj = $rm->invoke(null, (int)$obj);
       }
 
-      if(is_object($obj) && $obj instanceof BaseModel) {
+      if(is_object($obj) && $obj instanceof lib\Base_Model) {
         $this->load_from_array((array)$obj->get_values());
       }
       else if(is_array($obj) || is_object($obj)) {

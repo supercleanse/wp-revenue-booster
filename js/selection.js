@@ -5,7 +5,7 @@ jQuery(document).ready(function ($) {
   var target_elements = 'h1,h2,h3,h4,h5,h6,a,button,p,div,li,span,blockquote';
 
   // If these tags are present then it's likely that this is a container element
-  var wprb_regex = RegExp('<\s*(div|img|i|a|span|blockquote|p)\s*[> ]');
+  var wprb_regex = RegExp('<\s*(div|img|i|a|span|blockquote|p|input|form|select|textarea)\s*[> ]');
   var selector_generator = new CssSelectorGenerator;
 
   // Scrub our highlight classes before trying to get a selector
@@ -86,11 +86,12 @@ jQuery(document).ready(function ($) {
 
   var wprb_save_customizations = function(form, cb) {
     var form_data = wprb_map_form_data(form);
+    var selector = $(form).data('selector');
 
     var args = {
       action: 'wprb_update_customizations',
       page_uri: $(form).data('page-uri'),
-      selector: $(form).data('selector'),
+      selector: selector,
       cust: form_data,
       security: WPRB_Customization.security
     };
@@ -109,7 +110,8 @@ jQuery(document).ready(function ($) {
           return alert(res.error);
         }
 
-        alert(res.message);
+        // Update on-page customizations
+        WPRB_Customization.customizations[selector] = res.customizations;
 
         cb(args.cust.length);
       }
@@ -126,10 +128,17 @@ jQuery(document).ready(function ($) {
       wprb_save_customizations(this, function(cust_count) {
         if(cust_count > 0) {
           WPRB_Customization.selections.push(selector);
-        }
+          $(target).addClass('wprb-selection-added');
+          $(target).attr('title', WPRB_Customization.strings['remove_selection']);
 
-        $(target).addClass('wprb-selection-added');
-        $(target).attr('title', WPRB_Customization.strings['remove_selection']);
+        }
+        else {
+          // Remove selection from WPRB_Customization.selections
+          var selection_index = WPRB_Customization.selections.indexOf(selector);
+          WPRB_Customization.selections.splice(selection_index, 1);
+
+          $(target).removeClass('wprb-selection-added');
+        }
 
         $.modal.close();
       });
@@ -162,8 +171,17 @@ jQuery(document).ready(function ($) {
     return wprb_replace_vars(WPRB_Customization.popup_row, vars);
   };
 
+  var wprb_register_remove_customization_event = function() {
+    $('a.wprb-remove-customization').click(
+      function (e) {
+        e.preventDefault();
+        $(this).parent().remove();
+      }
+    );  
+  };
+
   var wprb_register_add_customization_event = function() {
-    $('.wprb-add-customizations button').click(
+    $('.wprb-add-customizations a').click(
       function(e) {
         e.preventDefault();
 
@@ -174,41 +192,15 @@ jQuery(document).ready(function ($) {
         var popup_row_html = wprb_get_popup_row_html({index: cust_index});
 
         $(cust_elem).append(popup_row_html);
+
+        wprb_register_remove_customization_event();
       }
     );
-  }
+  };
 
   var wprb_click_text = function(target) {
-    var selector = wprb_get_selector(target);
-
-    if($.inArray(selector, WPRB_Customization.selections) !== -1) {
-      $(target).removeClass('wprb-selection-added');
-      $(target).attr('title', WPRB_Customization.strings['selection_removed']);
-      wprb_show_tooltip(target);
-
-      // Remove selection from WPRB_Customization.selections
-      var selection_index = WPRB_Customization.selections.indexOf(selector);
-      WPRB_Customization.selections.splice(selection_index, 1);
-
-      // TODO: AJAX Call to remove selection
-
-      $(target).addClass('wprb-add-selection');
-    }
-    else {
-      //$(target).removeClass('wprb-add-selection');
-      //$(target).attr('title', WPRB_Customization.strings['selection_added']);
-      //wprb_show_tooltip(target);
-
-      var html = wprb_get_popup_html(target);
-      $(html).appendTo($('body')).modal({fadeDuration: 250});
-
-      //WPRB_Customization.selections.push(selector);
-
-      // TODO: AJAX Call to add selection
-
-      //$(target).addClass('wprb-selection-added');
-      //$(target).attr('title', WPRB_Customization.strings['remove_selection']);
-    }
+    var html = wprb_get_popup_html(target);
+    $(html).appendTo($('body')).modal({fadeDuration: 250});
   };
 
   for(var i=0; i < WPRB_Customization.selections.length; i++) {
@@ -246,10 +238,45 @@ jQuery(document).ready(function ($) {
     }
   );
 
+  // Load the Popup's form with existing data
+  var wprb_load_popup_form = function(modal) {
+    var form = $(modal.$elm).find('form.wprb-customizations-form');
+    var selector = $(form).data('selector');
+
+    if(typeof WPRB_Customization.customizations[selector] != 'undefined') {
+      var cust = WPRB_Customization.customizations[selector];
+      var cust_elem = $(modal.$elm).find('form.wprb-customizations-form .wprb-customizations');
+
+      for(var i=0; i < cust.length; i++) {
+        var cust_index = $(cust_elem).children().length + 1;
+
+        var args = {
+          id: cust[i].id,
+          index: cust_index,
+          content: cust[i].content,
+          segment_id: cust[i].segment_id
+        };
+
+        var popup_row_html = wprb_get_popup_row_html(args);
+
+        $(cust_elem).append(popup_row_html);
+
+        // Grab the most recently appended row -> segment
+        var select_elem = $(cust_elem).find('.wprb-customization-row:last-child select.wprb-customization-segment');
+
+        select_elem.val(cust[i].segment_id);
+      }
+    }
+  };
+
   // Register events on modal open and do some search and replace
   $('body').on($.modal.OPEN, function(event, modal) {
     wprb_register_add_customization_event();
     wprb_register_submit_event(modal);
+    wprb_load_popup_form(modal);
+
+    // Must happen after load_popup_form so all of the customization rows are in place
+    wprb_register_remove_customization_event();
   });
 
 });

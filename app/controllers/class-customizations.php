@@ -125,7 +125,8 @@ class Customizations extends lib\Base_Ctrl {
     $page_uri = \sanitize_text_field($_POST['page_uri']);
     $selector = \sanitize_text_field($_POST['selector']);
 
-    $old_cust = models\Customization::get_all_by_page_uri_and_selector($page_uri, $selector);
+    $old_cust = models\Customization::get_page_customizations($page_uri, $selector);
+
 
     // Track the cust id's we're updating
     $ids_updated = [];
@@ -149,12 +150,19 @@ class Customizations extends lib\Base_Ctrl {
 
     // If there are any old_cust's that weren't updated then that means the user deleted them so get rid of them
     foreach($old_cust as $c) {
-      if(!in_array($c->id, $ids_updated)) {
-        $c->destroy();
+      if(!in_array($c['id'], $ids_updated)) {
+        $customization = new models\Customization($c['id']);
+        $customization->destroy();
       }
     }
 
-    return lib\Utils::exit_with_status(200,json_encode(['message'=>__('Your customizations were successfully updated', 'wp-revenue-booster')]));
+    return lib\Utils::exit_with_status(
+      200,
+      json_encode([
+        'message' => __('Your customizations were successfully updated', 'wp-revenue-booster'),
+        'customizations' => models\Customization::get_page_customizations($page_uri, $selector)
+      ])
+    );
   }
 
 }

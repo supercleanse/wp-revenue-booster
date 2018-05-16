@@ -19,7 +19,7 @@ class Ctrl_Factory {
 
     error_log("Ctrl_Factory {$class}");
 
-    if(isset($objs[$class]) && ($objs[$class] instanceof BaseCtrl)) {
+    if(isset($objs[$class]) && ($objs[$class] instanceof lib\Base_Ctrl)) {
       return $objs[$class];
     }
 

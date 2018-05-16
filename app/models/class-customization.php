@@ -89,8 +89,16 @@ class Customization extends lib\Base_Model {
     return self::get_all($order_by, $limit, compact('page_uri'));
   }
 
-  public static function get_page_customizations($page_uri) {
-    $objs = self::get_all_by_page_uri($page_uri);
+  /** Return all the customizations for a given page. Optionally restrict to one selector.
+   */
+  public static function get_page_customizations($page_uri, $selector=null) {
+
+    if(is_null($selector)) {
+      $objs = self::get_all_by_page_uri($page_uri);
+    }
+    else {
+      $objs = self::get_all_by_page_uri_and_selector($page_uri,$selector);
+    }
 
     if(empty($objs)) { return []; }
 
@@ -106,7 +114,12 @@ class Customization extends lib\Base_Model {
       $last_selector = $c->selector;
     }
 
-    return $customizations;
+    if(is_null($selector)) {
+      return $customizations;
+    }
+    else {
+      return $customizations[$c->selector];
+    }
   }
 
   public static function get_all_by_page_uri_and_selector($page_uri, $selector, $order_by='', $limit='') {

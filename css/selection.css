@@ -34,6 +34,10 @@
   margin-bottom: 15px;
 }
 
+.wprb-customization-popup input[type="submit"] {
+  float: right;
+}
+
 .wprb-customization-field {
   margin-bottom: 10px;
 }
@@ -42,3 +46,16 @@
   max-width: 1000px;
   z-index: 10000 !important;
 }
+
+.wprb-remove-customization {
+  float: right;
+}
+
+.wprb-add-customizations a, .wprb-remove-customization {
+  font-weight: bold;
+}
+
+.wprb-add-customizations a:hover, .wprb-remove-customization:hover {
+  color: Gray;
+}
+

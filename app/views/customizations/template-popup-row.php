@@ -1,5 +1,6 @@
 <?php if(!defined('ABSPATH')) {die('You are not allowed to call this page directly.');} ?>
 <div class="wprb-customization-row">
+  <a href="" class="wprb-remove-customization" title="<?php _e('Remove Customization'); ?>">[x]</a>
   <label><?php _e('Customization #{{index}}'); ?></label>
   <input type="hidden" name="cust[{{index}}][id]" value="{{id}}" />
   <div class="wprb-customization-field">
@@ -13,6 +14,8 @@
   <div class="wprb-customization-field">
     <label><?php _e('Content'); ?></label>
     <textarea name="cust[{{index}}][content]" class="wprb-customization-content">{{content}}</textarea>
+  </div>
+  <div class="wprb-customization-field">
   </div>
 </div>
 
