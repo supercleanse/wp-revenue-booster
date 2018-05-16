@@ -3,6 +3,7 @@ namespace wp_revenue_booster\models;
 
 if(!defined('ABSPATH')) {die('You are not allowed to call this page directly.');}
 
+use wp_revenue_booster as base;
 use wp_revenue_booster\lib as lib;
 
 class Customization extends lib\Base_Model {
@@ -76,7 +77,7 @@ class Customization extends lib\Base_Model {
     $args = (array)$obj->get_values();
     unset($args['id']);
 
-    return $db->create_record($db->customization,$args);
+    return $db->create_record($db->customizations,$args,false /* ignore created_at */);
   }
 
   public static function update($obj) {
@@ -89,23 +90,27 @@ class Customization extends lib\Base_Model {
   }
 
   public static function get_page_customizations($page_uri) {
-    $cust = self::get_all_by_page_uri($page_uri);
+    $objs = self::get_all_by_page_uri($page_uri);
 
-    if(empty($cust)) { return []; }
+    if(empty($objs)) { return []; }
 
     $customizations = [];
     $last_selector = '';
-    foreach($customizations as $c) {
+    foreach($objs as $c) {
       if($c->selector != $last_selector) {
         $customizations[$c->selector] = [];
       }
 
-      $customizations[$c->selector][] = $c;
+      $customizations[$c->selector][] = $c->get_values();
 
       $last_selector = $c->selector;
     }
 
     return $customizations;
+  }
+
+  public static function get_all_by_page_uri_and_selector($page_uri, $selector, $order_by='', $limit='') {
+    return self::get_all($order_by, $limit, compact('page_uri','selector'));
   }
 }
 

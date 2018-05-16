@@ -89,12 +89,9 @@ function autoloader($class_name) {
     preg_match('/([^\\\]*)$/', $class_name, $m);
 
     $class = $m[1];
-    error_log("WPRB Autoload Class {$class}");
 
     $file_name = strtolower($class);
     $file_name = 'class-' . preg_replace('/_/','-',$file_name);
-
-    error_log("WPRB Autoload File {$class}");
 
     $filepath = '';
 

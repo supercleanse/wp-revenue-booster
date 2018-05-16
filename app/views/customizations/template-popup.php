@@ -14,7 +14,7 @@
 
   <div class="wprb-current">
     <label><?php _e('Dynamic Text Customizations:'); ?></label>
-    <form class="wprb-customizations-form" data-selector="{{selector}}">
+    <form class="wprb-customizations-form" data-selector="{{selector}}" data-page-uri="<?php echo $page_uri; ?>">
       <div class="wprb-customizations"></div>
 
       <div class="wprb-add-remove">

@@ -49,7 +49,6 @@ jQuery(document).ready(function ($) {
     for (var k in obj){
       if (obj.hasOwnProperty(k)) {
         var regexp_str = '\\\{\\\{' + k + '\\\}\\\}';
-        console.log('regexp_str',regexp_str);
         var regexp = new RegExp(regexp_str,'g');
         str = str.replace(regexp, obj[k]);
       }
@@ -58,10 +57,63 @@ jQuery(document).ready(function ($) {
     return str;
   };
 
-  var wprb_save_customizations = function(form) {
-    // TODO: AJAX save
-    var form_data = $(form).serialize();
-    console.log('form_data',form_data);
+  /** This method maps the form_data returned by serializeArray
+   *  in name/value pairs into actual objects.
+   */
+  var wprb_map_form_data = function(form) {
+    // Name / Value Pairs
+    var serialized_data = $(form).serializeArray();
+    var re = /cust\[([^\]]*)\]\[([^\]]*)\]/;
+
+    var form_data = [];
+    for(var i=0; i < serialized_data.length; i++) {
+      var m = serialized_data[i].name.match(re);
+
+      if(typeof m[1] != 'undefined' && typeof m[2] != 'undefined') {
+        var index = parseInt(m[1]) - 1; // adjust down
+        var field = m[2];
+
+        if(typeof form_data[index] == 'undefined') {
+          form_data[index] = {};
+        }
+
+        form_data[index][field] = serialized_data[i].value;
+      }
+    }
+
+    return form_data;
+  };
+
+  var wprb_save_customizations = function(form, cb) {
+    var form_data = wprb_map_form_data(form);
+
+    var args = {
+      action: 'wprb_update_customizations',
+      page_uri: $(form).data('page-uri'),
+      selector: $(form).data('selector'),
+      cust: form_data,
+      security: WPRB_Customization.security
+    };
+
+    $.ajax({
+      type: 'post',
+      dataType: 'json',
+      url: WPRB_Customization.ajaxurl,
+      data: args,
+      success: function(res) {
+        if(res==-1) {
+          return alert('Unauthorized');
+        }
+
+        if(typeof res.error !== 'undefined') {
+          return alert(res.error);
+        }
+
+        alert(res.message);
+
+        cb(args.cust.length);
+      }
+    });
   };
 
   var wprb_register_submit_event = function(modal) {
@@ -70,16 +122,18 @@ jQuery(document).ready(function ($) {
 
       var selector = $(this).data('selector');
       var target = $(selector);
-      var selector = wprb_get_selector(target);
 
-      //WPRB_Customization.selections.push(selector);
+      wprb_save_customizations(this, function(cust_count) {
+        if(cust_count > 0) {
+          WPRB_Customization.selections.push(selector);
+        }
 
-      wprb_save_customizations(this);
+        $(target).addClass('wprb-selection-added');
+        $(target).attr('title', WPRB_Customization.strings['remove_selection']);
 
-      $(target).addClass('wprb-selection-added');
-      $(target).attr('title', WPRB_Customization.strings['remove_selection']);
+        $.modal.close();
+      });
 
-      $.modal.close();
     });
   };
 
@@ -90,7 +144,6 @@ jQuery(document).ready(function ($) {
       current_text: $(target).html(),
       selector: selector
     };
-    console.log('popup',WPRB_Customization.popup);
 
     return wprb_replace_vars(WPRB_Customization.popup, vars);
   };
@@ -118,7 +171,6 @@ jQuery(document).ready(function ($) {
         // button -> span.wprb-add-customizations -> div.wprb-add-remove -> form.wprb-customizations-form
         var cust_elem = $(this).parent().parent().parent().find('.wprb-customizations');
         var cust_index = $(cust_elem).children().length + 1;
-        console.log('cust_index',cust_index);
         var popup_row_html = wprb_get_popup_row_html({index: cust_index});
 
         $(cust_elem).append(popup_row_html);
@@ -148,7 +200,6 @@ jQuery(document).ready(function ($) {
       //wprb_show_tooltip(target);
 
       var html = wprb_get_popup_html(target);
-      console.log('popup html',html);
       $(html).appendTo($('body')).modal({fadeDuration: 250});
 
       //WPRB_Customization.selections.push(selector);
