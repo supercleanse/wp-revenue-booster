@@ -10,6 +10,8 @@
         <option value="<?php echo $segment->ID; ?>"><?php echo $segment->post_title; ?></option>
       <?php endforeach; ?>
     </select>
+    &nbsp;&nbsp;
+    <a href="<?php echo admin_url('post-new.php?post_type=mprb-segment'); ?>"><?php _e('[Create New Segment]'); ?></a>
   </div>
   <div class="wprb-customization-field">
     <label><?php _e('Content'); ?></label>

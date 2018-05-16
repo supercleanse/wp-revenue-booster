@@ -17,8 +17,6 @@ class Ctrl_Factory {
       $class = base\CTRLS_NAMESPACE . '\\' . Inflector::wp_classify($class);
     }
 
-    error_log("Ctrl_Factory {$class}");
-
     if(isset($objs[$class]) && ($objs[$class] instanceof lib\Base_Ctrl)) {
       return $objs[$class];
     }

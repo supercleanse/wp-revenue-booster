@@ -35,7 +35,7 @@ jQuery(document).ready(function ($) {
     var selector = wprb_get_selector(target);
 
     if($.inArray(selector, WPRB_Customization.selections) !== -1) {
-      //$(target).attr('title', WPRB_Customization.strings['remove_selection']);
+      //$(target).attr('title', WPRB_Customization.strings['edit_selection']);
     }
     else {
       $(target).attr('title', WPRB_Customization.strings['add_selection']);
@@ -66,18 +66,32 @@ jQuery(document).ready(function ($) {
     var re = /cust\[([^\]]*)\]\[([^\]]*)\]/;
 
     var form_data = [];
+    var last_matched_index = null;
+    var form_data_index = 0;
     for(var i=0; i < serialized_data.length; i++) {
       var m = serialized_data[i].name.match(re);
 
       if(typeof m[1] != 'undefined' && typeof m[2] != 'undefined') {
-        var index = parseInt(m[1]) - 1; // adjust down
-        var field = m[2];
+        var matched_index = parseInt(m[1]);
 
-        if(typeof form_data[index] == 'undefined') {
-          form_data[index] = {};
+        // We don't care what the matched index is we just
+        // increment our real, fixed index when it changes ... 
+        if(last_matched_index!=matched_index) {
+          if(last_matched_index != null) {
+            form_data_index++;
+          }
+
+          last_matched_index = matched_index;
         }
 
-        form_data[index][field] = serialized_data[i].value;
+
+        var field = m[2];
+
+        if(typeof form_data[form_data_index] == 'undefined') {
+          form_data[form_data_index] = {};
+        }
+
+        form_data[form_data_index][field] = serialized_data[i].value;
       }
     }
 
@@ -129,7 +143,7 @@ jQuery(document).ready(function ($) {
         if(cust_count > 0) {
           WPRB_Customization.selections.push(selector);
           $(target).addClass('wprb-selection-added');
-          $(target).attr('title', WPRB_Customization.strings['remove_selection']);
+          $(target).attr('title', WPRB_Customization.strings['edit_selection']);
 
         }
         else {
@@ -207,7 +221,7 @@ jQuery(document).ready(function ($) {
     var selector = WPRB_Customization.selections[i];
     if($(selector).length > 0) { // Element exists?
       $(selector).addClass('wprb-selection-added');
-      $(selector).attr('title', WPRB_Customization.strings['remove_selection']);
+      $(selector).attr('title', WPRB_Customization.strings['edit_selection']);
     }
   }
 

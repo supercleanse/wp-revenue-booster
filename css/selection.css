@@ -55,7 +55,7 @@
   font-weight: bold;
 }
 
-.wprb-add-customizations a:hover, .wprb-remove-customization:hover {
+.wprb-customization-popup a:hover {
   color: Gray;
 }
 

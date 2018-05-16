@@ -21,10 +21,8 @@ class Customizations extends lib\Base_Ctrl {
 
   public function enqueue_selection_scripts() {
     $strings = [
-      'add_selection' => __('Click to Add Customization'),
-      'selection_added' => __('Customization Added'),
-      'remove_selection' => __('Click to Remove Customization'),
-      'selection_removed' => __('Customization Removed')
+      'add_selection' => __('Click to Add Customizations'),
+      'edit_selection' => __('Click to Edit Customizations')
     ];
 
     // Get a clean page url with appropriate query string
@@ -118,15 +116,18 @@ class Customizations extends lib\Base_Ctrl {
       lib\Utils::exit_with_status(400,json_encode(['error'=>__('Must specify a selector', 'wp-revenue-booster')]));
     }
 
-    if(!isset($_POST['cust'])) {
-      lib\Utils::exit_with_status(400,json_encode(['error'=>__('Must specify customizations', 'wp-revenue-booster')]));
+    //if(!isset($_POST['cust'])) {
+    //  lib\Utils::exit_with_status(400,json_encode(['error'=>__('Must specify customizations', 'wp-revenue-booster')]));
+    //}
+
+    if(!isset($_POST['cust']) || empty($_POST['cust'])) {
+      $_POST['cust'] = [];
     }
 
     $page_uri = \sanitize_text_field($_POST['page_uri']);
     $selector = \sanitize_text_field($_POST['selector']);
 
     $old_cust = models\Customization::get_page_customizations($page_uri, $selector);
-
 
     // Track the cust id's we're updating
     $ids_updated = [];
