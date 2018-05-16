@@ -2,10 +2,10 @@
 /*
 Plugin Name: WP Revenue Booster
 Plugin URI: https://wprevenuebooster.com/
-Description: Personalize the text on your site based on customer segmentation.
+Description: Dynamically personalize any text on your site based on your users' behavior.
 Version: 1.0.0
-Author: Chris Lema, Blair Williams
-Author URI: https://chrislema.com/
+Author: Blair Williams, Chris Lema
+Author URI: https://wprevenuebooster.com/
 Text Domain: wp-revenue-booster
 */
 
