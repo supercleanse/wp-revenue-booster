@@ -80,6 +80,8 @@ class Content extends lib\Base_Ctrl {
       lib\Utils::exit_with_status(400,json_encode(['error'=>__('Must specify a page_uri', 'wp-revenue-booster')]));
     }
 
+    // TODO: Cache this in a cookie with the md5 hashed user_request_data
+    // to be used as a dirty bit on whether we should get new info again.
     $customizations = $this->get_matching_customizations($_POST['page_uri']);
 
     return lib\Utils::exit_with_status(200, json_encode($customizations));

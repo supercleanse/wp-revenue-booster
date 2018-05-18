@@ -42,7 +42,7 @@
   margin-bottom: 10px;
 }
 
-.modal {
+.wprb_modal {
   max-width: 1000px;
   z-index: 10000 !important;
 }

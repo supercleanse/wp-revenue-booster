@@ -41,12 +41,12 @@ class Customizations extends lib\Base_Ctrl {
 
     $popup_row = lib\View::get_string('customizations/popup-row', compact('segments'));
 
-    wp_register_style('wprb-jquerymodal', 'https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css');
+    wp_register_style('wprb-jquerymodal', base\CSS_URL . '/lib/jquery.modal.css');
     wp_enqueue_style('wprb-selection', base\CSS_URL . '/selection.css',['wprb-jquerymodal']);
 
     wp_register_script('wprb-tippy', 'https://unpkg.com/tippy.js@2.5.2/dist/tippy.all.min.js');
     wp_register_script('wprb-css-selector-generator', base\JS_URL . '/lib/css-selector-generator.min.js');
-    wp_register_script('wprb-jquerymodal', 'https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js', ['jquery']);
+    wp_register_script('wprb-jquerymodal', base\JS_URL . '/lib/jquery.modal.js', ['jquery']);
     wp_enqueue_script('wprb-selection', base\JS_URL . '/selection.js', ['jquery','wprb-tippy','wprb-css-selector-generator','wprb-jquerymodal']);
     wp_localize_script('wprb-selection', 'WPRB_Customization', compact('segments', 'selections', 'customizations', 'strings', 'page_uri','popup','popup_row','security','ajaxurl'));
   }

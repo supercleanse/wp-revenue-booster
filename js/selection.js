@@ -154,7 +154,7 @@ jQuery(document).ready(function ($) {
           $(target).removeClass('wprb-selection-added');
         }
 
-        $.modal.close();
+        $.wprb_modal.close();
       });
 
     });
@@ -214,7 +214,7 @@ jQuery(document).ready(function ($) {
 
   var wprb_click_text = function(target) {
     var html = wprb_get_popup_html(target);
-    $(html).appendTo($('body')).modal({fadeDuration: 250});
+    $(html).appendTo($('body')).wprb_modal({fadeDuration: 250});
   };
 
   for(var i=0; i < WPRB_Customization.selections.length; i++) {
@@ -284,7 +284,7 @@ jQuery(document).ready(function ($) {
   };
 
   // Register events on modal open and do some search and replace
-  $('body').on($.modal.OPEN, function(event, modal) {
+  $('body').on($.wprb_modal.OPEN, function(event, modal) {
     wprb_register_add_customization_event();
     wprb_register_submit_event(modal);
     wprb_load_popup_form(modal);
