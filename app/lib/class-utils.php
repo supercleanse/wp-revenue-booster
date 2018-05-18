@@ -475,6 +475,33 @@ class Utils {
     return $page_uri;
   }
 
+  public function get_current_client_ip() {
+    $ipaddress = (isset($_SERVER['REMOTE_ADDR']))?$_SERVER['REMOTE_ADDR']:'';
+
+    if(isset($_SERVER['HTTP_CLIENT_IP']) && $_SERVER['HTTP_CLIENT_IP'] != '127.0.0.1') {
+      $ipaddress = $_SERVER['HTTP_CLIENT_IP'];
+    }
+    elseif(isset($_SERVER['HTTP_X_FORWARDED_FOR']) && $_SERVER['HTTP_X_FORWARDED_FOR'] != '127.0.0.1') {
+      $ipaddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
+    }
+    elseif(isset($_SERVER['HTTP_X_FORWARDED']) && $_SERVER['HTTP_X_FORWARDED'] != '127.0.0.1') {
+      $ipaddress = $_SERVER['HTTP_X_FORWARDED'];
+    }
+    elseif(isset($_SERVER['HTTP_FORWARDED_FOR']) && $_SERVER['HTTP_FORWARDED_FOR'] != '127.0.0.1') {
+      $ipaddress = $_SERVER['HTTP_FORWARDED_FOR'];
+    }
+    elseif(isset($_SERVER['HTTP_FORWARDED']) && $_SERVER['HTTP_FORWARDED'] != '127.0.0.1') {
+      $ipaddress = $_SERVER['HTTP_FORWARDED'];
+    }
+
+    $ips = explode(',', $ipaddress);
+    if(isset($ips[1])) {
+      $ipaddress = $ips[0]; //Fix for flywheel
+    }
+
+    return $ipaddress;
+  }
+
 /* PLUGGABLE FUNCTIONS AS TO NOT STEP ON OTHER PLUGINS' CODE */
   public static function get_currentuserinfo() {
     Utils::_include_pluggables('wp_get_current_user');

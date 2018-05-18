@@ -83,6 +83,7 @@ class Inflector {
       'octopus' => 'octopuses',
       'opus' => 'opuses',
       'ox' => 'oxen',
+      'os' => 'oses', // Added by Blair specifically for the abbreviation 'os' (Operating System)
       'penis' => 'penises',
       'person' => 'people',
       'plateau' => 'plateaux',

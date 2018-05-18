@@ -38,7 +38,9 @@ class Content extends lib\Base_Ctrl {
     foreach($segment_ids as $segment_id) {
       $segment = new models\Segment($segment_id);
 
-      if($segment->current_user_matches_segment()) {
+      $urd = models\Segment::get_user_request_data();
+
+      if($segment->check_for_match($urd)) {
         $user_matched_segments = $segment_id;
       }
     }

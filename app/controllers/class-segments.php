@@ -92,29 +92,16 @@ class Segments extends lib\Base_Cpt_Ctrl {
 
     $rule_filters = [
       [
-        'id' => 'logged_in',
-        'label' => __('Logged In'),
-        'type' => 'integer',
-        'input' => 'radio',
+        'id' => 'user_type',
+        'label' => __('User Type'),
+        'type' => 'string',
+        'input' => 'select',
         'values' => [
-          1 => __('Yes'),
-          0 => __('No')
+          'logged_in' => __('Logged In'),
+          'returning_visitor' => __('Returning Visitor')
         ],
-        'operators' => ['equal']
+        'operators' => ['equal','not_equal']
       ],
-      [
-        'id' => 'returning_visitor',
-        'label' => __('Returning Visitor'),
-        'type' => 'integer',
-        'input' => 'radio',
-        'values' => [
-          1 => __('Yes'),
-          0 => __('No')
-        ],
-        'operators' => ['equal']
-      ],
-
-/* TODO: Soon
       [
         'id' => 'device',
         'label' => __('Device'),
@@ -149,6 +136,20 @@ class Segments extends lib\Base_Cpt_Ctrl {
         'operators' => ['equal','not_equal']
       ],
       [
+        'id' => 'os',
+        'label' => __('Operating System'),
+        'type' => 'string',
+        'input' => 'select',
+        'values' => [
+          'android' => __('Android'),
+          'ios'     => __('iOS'),
+          'linux'   => __('Linux'),
+          'macosx'  => __('Mac'),
+          'win'     => __('Windows')
+        ],
+        'operators' => ['equal','not_equal']
+      ],
+      [
         'id' => 'country',
         'label' => __('Country'),
         'type' => 'string',
@@ -164,7 +165,6 @@ class Segments extends lib\Base_Cpt_Ctrl {
         'values' => helpers\App::get_states(),
         'operators' => ['equal','not_equal']
       ],
- */
     ];
 
     return [
