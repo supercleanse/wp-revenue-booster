@@ -3,23 +3,26 @@ namespace wp_revenue_booster\controllers;
 
 if(!defined('ABSPATH')) {die('You are not allowed to call this page directly.');}
 
-use wp_revenue_booster as base;
-use wp_revenue_booster\lib as lib;
-use wp_revenue_booster\controllers as ctrls;
-use wp_revenue_booster\models as models;
+use wp_revenue_booster as base,
+    wp_revenue_booster\lib as lib,
+    wp_revenue_booster\controllers as ctrls,
+    wp_revenue_booster\models as models;
 
 class Content extends lib\Base_Ctrl {
   public function load_hooks() {
     if(!is_admin() && !array_key_exists('wprb-selection', $_REQUEST)) {
       add_action('wp_enqueue_scripts', [$this,'enqueue_content_scripts'], 5);
     }
+
+    add_action( 'wp_ajax_wprb_get_customizations', [$this,'ajax_get_customizations'] );
+    add_action( 'wp_ajax_nopriv_wprb_get_customizations', [$this,'ajax_get_customizations'] );
   }
 
   public function enqueue_content_scripts() {
-    $loc = [
-      'user_request_data' => lib\User_Data::get_user_request_data(),
-      'customizations' => $this->get_matching_customizations()
-    ];
+    $page_uri = lib\Utils::get_page_uri();
+    $ajaxurl = \admin_url('admin-ajax.php');
+
+    $loc = compact('page_uri','ajaxurl');
 
     wp_enqueue_style('wprb-content', base\CSS_URL . '/content.css');
     wp_enqueue_script('wprb-content', base\JS_URL . '/content.js', ['jquery']);
@@ -29,8 +32,7 @@ class Content extends lib\Base_Ctrl {
 
   /** This method gathers all of the customizations that match this page_uri AND for which the user is in a segment.
    */
-  public function get_matching_customizations() {
-    $page_uri = lib\Utils::get_page_uri();
+  public function get_matching_customizations($page_uri) {
     $segment_ids = models\Customization::get_unique_customization_segments_by_page_uri($page_uri);
 
     $user_matched_segments = [];
@@ -69,5 +71,18 @@ class Content extends lib\Base_Ctrl {
     return $filtered_matching_customizations;
   }
 
+  public function ajax_get_customizations() {
+    if(!lib\Utils::is_post_request()) {
+      lib\Utils::exit_with_status(404,json_encode(['error'=>__('Not Found', 'wp-revenue-booster')]));
+    }
+
+    if(!isset($_POST['page_uri'])) {
+      lib\Utils::exit_with_status(400,json_encode(['error'=>__('Must specify a page_uri', 'wp-revenue-booster')]));
+    }
+
+    $customizations = $this->get_matching_customizations($_POST['page_uri']);
+
+    return lib\Utils::exit_with_status(200, json_encode($customizations));
+  }
 }
 
