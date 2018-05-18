@@ -64,9 +64,9 @@ class User_Data {
   public static function get_browser_info() {
     $cookie_name = 'wprb-browser-info';
 
-    //if(isset($_COOKIE[$cookie_name])) {
-    //  return json_decode(base64_decode($_COOKIE[$cookie_name]), true);
-    //}
+    if(isset($_COOKIE[$cookie_name])) {
+      return json_decode(base64_decode($_COOKIE[$cookie_name]), true);
+    }
 
     $ua = urlencode($_SERVER['HTTP_USER_AGENT']);
     $url = "https://cspf-parse-user-agent.herokuapp.com/?ua={$ua}";
@@ -78,11 +78,9 @@ class User_Data {
     }
 
     if(is_array($res)) {
-      $body = $res['body'];
+      $obj = json_decode($res['body'], true);
 
-      $obj = json_decode($body, true);
-
-      //setcookie($cookie_name, base64_encode(json_encode($obj['result'])), time() + lib\Utils::months(1));
+      setcookie($cookie_name, base64_encode(json_encode($obj['result'])), time() + lib\Utils::months(1));
 
       return $obj['result']; 
     }
@@ -173,33 +171,33 @@ class User_Data {
 
     if(!lib\Utils::is_ip($ip)) { return false; }
 
-    $lockey = 'wprb_locate_by_ip_' . md5($ip.$source);
-    $loc = get_transient($lockey);
+    if($source=='caseproof') {
+      $url    = "https://cspf-locate.herokuapp.com?ip={$ip}";
+      $cindex = 'country_code';
+      $rindex = 'region_code';
+    }
+    else { // geoplugin
+      $url    = "http://www.geoplugin.net/json.gp?ip={$ip}";
+      $cindex = 'geoplugin_countryCode';
+      $rindex = 'geoplugin_regionCode';
+    }
 
-    if(false===$loc) {
-      if($source=='caseproof') {
-        $url    = "https://cspf-locate.herokuapp.com?ip={$ip}";
-        $cindex = 'country_code';
-        $rindex = 'region_code';
-      }
-      else { // geoplugin
-        $url    = "http://www.geoplugin.net/json.gp?ip={$ip}";
-        $cindex = 'geoplugin_countryCode';
-        $rindex = 'geoplugin_regionCode';
-      }
-
+    $cookie_name = 'wprb-loc-' . md5($ip.$source);
+    if(!isset($_COOKIE[$cookie_name])) {
       $res = wp_remote_get($url);
       if(is_wp_error($res)) { error_log($res->get_error_message); return []; }
       $obj = json_decode($res['body']);
 
-      $country = (isset($obj->{$cindex})?$obj->{$cindex}:'');
-      $state = (isset($obj->{$rindex})?$obj->{$rindex}:'');
-
-      $loc = (object)compact('country','state');
-      set_transient($lockey,$loc,DAY_IN_SECONDS);
+      setcookie($cookie_name, base64_encode($res['body']), time() + lib\Utils::months(1));
+    }
+    else {
+      $obj = json_decode(base64_decode($_COOKIE[$cookie_name]));
     }
 
-    return $loc;
+    $country = (isset($obj->{$cindex})?$obj->{$cindex}:'');
+    $state = (isset($obj->{$rindex})?$obj->{$rindex}:'');
+
+    return (object)compact('country','state');
   }
 
   public static function country_by_ip($ip=null, $source='caseproof') {
