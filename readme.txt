@@ -5,7 +5,7 @@ Tags: context, dynamic content, traffic, conversions, testing, conversion testin
 Requires at least: 4.9
 Requires PHP: 5.3
 Tested up to: 4.9.6
-Stable tag: 1.0.1
+Stable tag: 1.0.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -58,4 +58,10 @@ If you need help with this plugin please visit our website:
 
 = 1.0.1 =
 * Added Device, Browser, OS, Country and State Segment Rule Types
+
+= 1.0.2 =
+* Optimized user request data lookup with caching
+* Altered to load customizations via AJAX to avoid caching conflicts
+* Resolved a conflict with our customization modals and Bootstrap
+* Added toggle link at the bottom of the content on each page for convenience
 

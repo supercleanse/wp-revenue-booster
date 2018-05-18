@@ -3,7 +3,7 @@
 Plugin Name: WP Revenue Booster
 Plugin URI: https://wprevenuebooster.com/
 Description: Dynamically personalize any text on your site based on your users' behavior.
-Version: 1.0.1
+Version: 1.0.2
 Author: Blair Williams, Chris Lema
 Author URI: https://wprevenuebooster.com/
 Text Domain: wp-revenue-booster
@@ -41,15 +41,6 @@ define(ROOT_NAMESPACE . '\JS_URL', URL . '/js');
 define(ROOT_NAMESPACE . '\CSS_URL', URL . '/css');
 
 define(ROOT_NAMESPACE . '\DB_VERSION', 5);
-
-// Cookie the user immediately if they aren't already cookied
-// V2 Modify the cookie based on customer usage
-// Cookie should store:
-// - Location
-// - Device
-// - OS
-// - Browser
-//
 
 /**
  * Returns current plugin version.
