@@ -15,8 +15,9 @@ class Customizations extends lib\Base_Ctrl {
     }
 
     // Don't show the toolbar link on the back end
-    if(!is_admin()) {
-      add_action('admin_bar_menu', [$this,'toolbar_links'], 999);
+    if(!is_admin() && lib\Utils::is_logged_in_and_an_admin()) {
+      add_action('admin_bar_menu', [$this,'add_toolbar_links'], 999);
+      add_action('the_content', [$this,'add_content_links'], 999);
     }
 
     add_action( 'wp_ajax_wprb_update_customizations', [$this,'ajax_update'] );
@@ -51,19 +52,32 @@ class Customizations extends lib\Base_Ctrl {
     wp_localize_script('wprb-selection', 'WPRB_Customization', compact('segments', 'selections', 'customizations', 'strings', 'page_uri','popup','popup_row','security','ajaxurl'));
   }
 
-  // Add a parent shortcut link
-  public function toolbar_links($wp_admin_bar) {
+  private function get_toggle_link() {
     $uri = $_SERVER['REQUEST_URI'];
 
-    // Remove the selection param
-    // If param is first of many
-    $uri = preg_replace('/\?wprb-selection&/','?',$uri);
+    if(isset($_REQUEST['wprb-selection'])) {
+      // Remove the selection param
+      // If param is first of many
+      $uri = preg_replace('/\?wprb-selection&/','?',$uri);
 
-    // If param is first and only
-    $uri = preg_replace('/\?wprb-selection/','',$uri);
+      // If param is first and only
+      $uri = preg_replace('/\?wprb-selection/','',$uri);
 
-    // If param is not first of many
-    $uri = preg_replace('/&wprb-selection/','',$uri);
+      // If param is not first of many
+      $uri = preg_replace('/&wprb-selection/','',$uri);
+    }
+    else {
+      $delim = lib\Utils::get_delim($uri);
+
+      $uri = "{$uri}{$delim}wprb-selection";
+    }
+
+    return $uri;
+  }
+
+  // Add a parent shortcut link
+  public function add_toolbar_links($wp_admin_bar) {
+    $uri = $this->get_toggle_link();
 
     $args = [];
     if(isset($_REQUEST['wprb-selection'])) {
@@ -78,10 +92,6 @@ class Customizations extends lib\Base_Ctrl {
       ];
     }
     else {
-      $delim = lib\Utils::get_delim($uri);
-
-      $uri = "{$uri}{$delim}wprb-selection";
-
       $args = [
         'id' => 'wp-revenue-booster',
         'title' => __('Add Dynamic Text'), 
@@ -94,6 +104,22 @@ class Customizations extends lib\Base_Ctrl {
     }
 
     $wp_admin_bar->add_node($args);
+  }
+
+  /** This places a link at the end of the_content for toggling in and out of customization mode. */
+  public function add_content_links($content) {
+    $url = $this->get_toggle_link();
+
+    if(isset($_REQUEST['wprb-selection'])) {
+      $cust_text = __('Finish Adding Dynamic Text');
+    }
+    else {
+      $cust_text = __('Add Dynamic Text');
+    }
+
+    $link = "<div class=\"wprb-toggle-selection-mode\"><a href=\"{$url}\">{$cust_text}</a></div>";
+
+    return $content.$link;
   }
 
   public function ajax_update() {

@@ -225,7 +225,7 @@ jQuery(document).ready(function ($) {
     }
   }
 
-  $( target_elements ).not('#wpadminbar, #wpadminbar *').hover(
+  $( target_elements ).not('#wpadminbar, #wpadminbar *, .wprb-toggle-selection-mode, .wprb-toggle-selection-mode a').hover(
     function() {
       var txt = $(this).html();
       if(txt.length > 0 && !wprb_regex.test(txt)) {
@@ -242,11 +242,11 @@ jQuery(document).ready(function ($) {
   );
 
   // Click text event handler
-  $( target_elements ).not('#wpadminbar, #wpadminbar *').click(
+  $( target_elements ).not('#wpadminbar, #wpadminbar *, .wprb-toggle-selection-mode, .wprb-toggle-selection-mode a').click(
     function(e) {
-      e.preventDefault();
       var txt = $(this).html();
       if(txt.length > 0 && !wprb_regex.test(txt)) {
+        e.preventDefault();
         wprb_click_text(this);
       }
     }

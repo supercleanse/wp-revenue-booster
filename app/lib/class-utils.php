@@ -174,7 +174,7 @@ class Utils {
   }
 
   public static function is_logged_in_and_an_admin() {
-    return (Utils::is_user_logged_in() and Utils::is_admin());
+    return (Utils::is_user_logged_in() and Utils::is_user_admin());
   }
 
   public static function is_logged_in_and_a_subscriber() {
