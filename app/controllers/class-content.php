@@ -17,7 +17,7 @@ class Content extends lib\Base_Ctrl {
 
   public function enqueue_content_scripts() {
     $loc = [
-      'user_request_data' => models\Segment::get_user_request_data(),
+      'user_request_data' => lib\User_Data::get_user_request_data(),
       'customizations' => $this->get_matching_customizations()
     ];
 
@@ -38,10 +38,10 @@ class Content extends lib\Base_Ctrl {
     foreach($segment_ids as $segment_id) {
       $segment = new models\Segment($segment_id);
 
-      $urd = models\Segment::get_user_request_data();
+      $urd = lib\User_Data::get_user_request_data();
 
       if($segment->check_for_match($urd)) {
-        $user_matched_segments = $segment_id;
+        $user_matched_segments[] = $segment_id;
       }
     }
 

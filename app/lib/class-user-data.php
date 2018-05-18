@@ -3,9 +3,10 @@ namespace wp_revenue_booster\lib;
 
 if(!defined('ABSPATH')) {die('You are not allowed to call this page directly.');}
 
-use wp_revenue_booster as base;
-use wp_revenue_booster\controllers as ctrls;
-use wp_revenue_booster\models as model;
+use wp_revenue_booster as base,
+    wp_revenue_booster\controllers as ctrls,
+    wp_revenue_booster\models as model,
+    wp_revenue_booster\lib as lib;
 
 /** Utilities for dealing with the lookup and gathering of user data for use in segmentation. */
 class User_Data {
@@ -59,66 +60,14 @@ class User_Data {
     return $urd;
   }
 
-  public static function php_get_browsercap_ini() {
-    static $browsecap_ini;
- 
-    if(!isset($browsecap_ini)) {
-      $browsecap_ini = parse_ini_file( base\LIB_PATH . '/data/php_browscap.ini', true, INI_SCANNER_RAW );
-    }
- 
-    return $browsecap_ini;
-  }
- 
-  /** Needed because we don't know if the target uesr will have a browsercap file installed
-   *  on their server ... particularly in a shared hosting environment this is difficult
-   */
-  public static function php_get_browser($agent = NULL) {
-    $agent=$agent?$agent:$_SERVER['HTTP_USER_AGENT'];
-    $yu=array();
-    $q_s=array("#\.#","#\*#","#\?#");
-    $q_r=array("\.",".*",".?");
-    $brows = self::php_get_browsercap_ini();
- 
-    if(empty($agent)) { return array(); }
- 
-    //Do a bit of caching here
-    static $hu;
-    if(!isset($hu)) {
-      $hu = array();
-    }
-    else {
-      return $hu;
-    }
- 
-    if(!empty($brows) and $brows and is_array($brows)) {
-      foreach($brows as $k=>$t) {
-        if(fnmatch($k,$agent)) {
-          $yu['browser_name_pattern']=$k;
-          $pat=preg_replace($q_s,$q_r,$k);
-          $yu['browser_name_regex']=strtolower("^$pat$");
-          foreach($brows as $g=>$r) {
-            if($t['Parent']==$g) {
-              foreach($brows as $a=>$b) {
-                if(isset($r['Parent']) && $r['Parent']==$a) {
-                  $yu=array_merge($yu,$b,$r,$t);
-                  foreach($yu as $d=>$z) {
-                    $l=strtolower($d);
-                    $hu[$l]=$z;
-                  }
-                }
-              }
-            }
-          }
-
-          break;
-        }
-      }
-    }
-
-    return $hu;
-  }
-
+  /** Get browser info from the Caseproof micro-service. */
   public static function get_browser_info() {
+    $cookie_name = 'wprb-browser-info';
+
+    //if(isset($_COOKIE[$cookie_name])) {
+    //  return json_decode(base64_decode($_COOKIE[$cookie_name]), true);
+    //}
+
     $ua = urlencode($_SERVER['HTTP_USER_AGENT']);
     $url = "https://cspf-parse-user-agent.herokuapp.com/?ua={$ua}";
     $res = wp_remote_get($url);
@@ -130,8 +79,12 @@ class User_Data {
 
     if(is_array($res)) {
       $body = $res['body'];
-      $obj = json_decode($body);
-      return $obj; 
+
+      $obj = json_decode($body, true);
+
+      //setcookie($cookie_name, base64_encode(json_encode($obj['result'])), time() + lib\Utils::months(1));
+
+      return $obj['result']; 
     }
 
     return (object)[];
@@ -141,13 +94,11 @@ class User_Data {
   public static function get_tech_info() {
     static $tech_info;
 
-    $info = self::get_browser_info();
-
-    if(empty($info)) { $tech_info = []; }
-
     if(isset($tech_info)) { return $tech_info; }
 
-    // TODO: Store this in a cookie ... this won't change for the given browser used
+    $info = self::get_browser_info();
+
+    if(empty($info)) { return []; }
 
     // Devices
     $devices=[];
@@ -229,24 +180,22 @@ class User_Data {
       if($source=='caseproof') {
         $url    = "https://cspf-locate.herokuapp.com?ip={$ip}";
         $cindex = 'country_code';
-      }
-      elseif($source=='freegeoip') {
-        $url    = "https://freegeoip.net/json/{$ip}";
-        $cindex = 'country_code';
+        $rindex = 'region_code';
       }
       else { // geoplugin
         $url    = "http://www.geoplugin.net/json.gp?ip={$ip}";
         $cindex = 'geoplugin_countryCode';
+        $rindex = 'geoplugin_regionCode';
       }
 
       $res = wp_remote_get($url);
       if(is_wp_error($res)) { error_log($res->get_error_message); return []; }
       $obj = json_decode($res['body']);
-      error_log('Location Object: ' . print_r($obj, true));
-      $country = (isset($obj->{$cindex})?$obj->{$cindex}:'');
-      $state = 'UT'; // How can we get this from the location object?
 
-      $loc = (object)compact('country');
+      $country = (isset($obj->{$cindex})?$obj->{$cindex}:'');
+      $state = (isset($obj->{$rindex})?$obj->{$rindex}:'');
+
+      $loc = (object)compact('country','state');
       set_transient($lockey,$loc,DAY_IN_SECONDS);
     }
 
