@@ -4,8 +4,8 @@ Donate link: https://wprevenuebooster.com/
 Tags: context, dynamic content, traffic, conversions, testing, conversion testing
 Requires at least: 4.9
 Requires PHP: 5.3
-Tested up to: 4.9
-Stable tag: 1.0.0
+Tested up to: 4.9.6
+Stable tag: 1.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -55,4 +55,7 @@ If you need help with this plugin please visit our website:
 
 = 1.0.0 =
 * Initial Release of WP Revenue Booster
+
+= 1.0.1 =
+* Added Device, Browser, OS, Country and State Segment Rule Types
 
