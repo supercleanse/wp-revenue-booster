@@ -33,8 +33,8 @@ Depending on where your customer is coming from, or what they've done on your si
 = Features =
 
 * Context-Based Content
-* Pre-Purchase Incentives
-* Post-Purchase Suggestions
+* Pre-Purchase Incentives (coming soon)
+* Post-Purchase Suggestions (coming soon)
 * Define Your Segments
 * Customize Your Text
 * Evaluate Your Conversions (coming soon)
@@ -47,33 +47,34 @@ If you need help with this plugin please visit our website:
 
 = Getting Started =
 
-- Step 1: Set up your Segments
+**Step 1: Set up your Segments**
 
-Segments are the mechanism that WP Revenue Booster uses to determine who will be shown what text. Some examples could include "Returning Visitors", "Visitors from Canada", "Logged In Users", "Mobile Users", etc.
+Segments are the mechanism that WP Revenue Booster uses to determine who will be shown what text.
 
-![Segment Listing](https://s3.amazonaws.com/wp-revenue-booster/segments.png "Segment Listing")
+Some segment examples could include "Returning Visitors," "Visitors from Canada," "Logged In Users," "Mobile Users," etc.
 
-![Editing a Segment](https://s3.amazonaws.com/wp-revenue-booster/segment_edit.png "Editing a Segment")
+You can create, edit and destroy segments by visiting "Revenue Booster" -> "Segments" in your WordPress admin after the plugin is installed.
 
-![Editing another Segment](https://s3.amazonaws.com/wp-revenue-booster/segment_edit_2.png "Editing another Segment")
+**Step 2: Customize Text on your Site**
 
-![Current Segment Match Types](https://s3.amazonaws.com/wp-revenue-booster/segment_current_match_types.png "Current Segment Match Types")
+WP Revenue Booster makes it easy for you to add text customizations based on Segment.
 
-- Step 2: Customize Text on your Site
+Here's how you can customize text on your website as a logged-in user:
 
-WP Revenue Booster makes it easy for you to add text customizations based on Segment. As a logged-in user just visit any page on your site, hover over the text you'd like to customize by segment and click it. Add the text you'd like to appear to any segments you've previously set up. That's it!
+1. Visit any page on your site
+2. Click the "Add Dynamic Text" button on the WordPress toolbar to enter the customizer
+3. Hover over the text you'd like to customize by segment and click it
+4. Add the text you'd like to appear to any segments you've previously set up
 
-![Toolbar Link Puts You Into the Customizer](https://s3.amazonaws.com/wp-revenue-booster/customizer_toolbar_link.png "Toolbar Link Puts You Into the Customizer")
+That's it!
 
-![Hover Over Text and Click to Customize](https://s3.amazonaws.com/wp-revenue-booster/customizer.png "Hover Over Text and Click to Customize")
+**Step 3: Test your Customizations**
 
-![Edit Text by Segment in the Popup](https://s3.amazonaws.com/wp-revenue-booster/customizer_popup_editing.png "Edit Text by Segment in the Popup")
+The easiest way to test your text customizations is by visiting your site as a user in the segment.
 
-![Once There are Customizations the Block will Appear Green](https://s3.amazonaws.com/wp-revenue-booster/customizer_block_has_customizations.png "Once There are Customizations the Block will Appear Green")
+For instance if your customization should appear for mobile users try visiting the page from your phone or if you're targeting users from a different country, use a VPN server in that country to check that your customizations appear.
 
-- Step 3: Test your Customizations
-
-The best way to test your text customizations is by visiting your site as a user in the segment. For instance if your customization should show for mobile users try visiting the page from your phone or if you're targeting users from a different country, use a VPN server in that country to check the text customizations. There are more sophisticated tools to simulate requests that would work for your targeted requests but this is the simplest.
+More sophisticated tools exist to simulate requests that would work for your targeted requests ... so that would be a more advanced way to test your customizations.
 
 == Installation ==
 
