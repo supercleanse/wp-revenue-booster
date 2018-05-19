@@ -23,12 +23,6 @@ But it doesn't have to be for much longer thanks to WP Revenue Booster!
 
 Depending on where your customer is coming from, or what they've done on your site, now you can personalize their experience. Improve your site's conversions by simply making small tweaks in the way you write your offers and products - based on who is visiting. Amazon ran more than 300 tests on their thank you page to determine the best way to encourage post-purchase activity. Now you can too!
 
-= Help =
-
-If you need help with this plugin please visit our website:
-
-[Get Help](https://wprevenuebooster.com/help/ "Get Help")
-
 = Process =
 
 1. Review where your traffic comes from so that you can determine what kind of segments to create.
@@ -44,6 +38,42 @@ If you need help with this plugin please visit our website:
 * Define Your Segments
 * Customize Your Text
 * Evaluate Your Conversions (coming soon)
+
+= Help =
+
+If you need help with this plugin please visit our website:
+
+[Get Help](https://wprevenuebooster.com/help/ "Get Help")
+
+= Getting Started =
+
+- Step 1: Set up your Segments
+
+Segments are the mechanism that WP Revenue Booster uses to determine who will be shown what text. Some examples could include "Returning Visitors", "Visitors from Canada", "Logged In Users", "Mobile Users", etc.
+
+![Segment Listing](https://s3.amazonaws.com/wp-revenue-booster/segments.png "Segment Listing")
+
+![Editing a Segment](https://s3.amazonaws.com/wp-revenue-booster/segment_edit.png "Editing a Segment")
+
+![Editing another Segment](https://s3.amazonaws.com/wp-revenue-booster/segment_edit_2.png "Editing another Segment")
+
+![Current Segment Match Types](https://s3.amazonaws.com/wp-revenue-booster/segment_current_match_types.png "Current Segment Match Types")
+
+- Step 2: Customize Text on your Site
+
+WP Revenue Booster makes it easy for you to add text customizations based on Segment. As a logged-in user just visit any page on your site, hover over the text you'd like to customize by segment and click it. Add the text you'd like to appear to any segments you've previously set up. That's it!
+
+![Toolbar Link Puts You Into the Customizer](https://s3.amazonaws.com/wp-revenue-booster/customizer_toolbar_link.png "Toolbar Link Puts You Into the Customizer")
+
+![Hover Over Text and Click to Customize](https://s3.amazonaws.com/wp-revenue-booster/customizer.png "Hover Over Text and Click to Customize")
+
+![Edit Text by Segment in the Popup](https://s3.amazonaws.com/wp-revenue-booster/customizer_popup_editing.png "Edit Text by Segment in the Popup")
+
+![Once There are Customizations the Block will Appear Green](https://s3.amazonaws.com/wp-revenue-booster/customizer_block_has_customizations.png "Once There are Customizations the Block will Appear Green")
+
+- Step 3: Test your Customizations
+
+The best way to test your text customizations is by visiting your site as a user in the segment. For instance if your customization should show for mobile users try visiting the page from your phone or if you're targeting users from a different country, use a VPN server in that country to check the text customizations. There are more sophisticated tools to simulate requests that would work for your targeted requests but this is the simplest.
 
 == Installation ==
 
